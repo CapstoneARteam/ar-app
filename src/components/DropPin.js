@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-browser-sdk";
-import { Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import { ObjectId } from "mongodb";
 
 const appId = "capstonear_app-xkqng";
@@ -30,97 +30,88 @@ const floatStyle = {
     zIndex: 1500,
 };
 
-const EditForm = (props) => {
-    const [defaultValues, setDefaultValues] = useState({
+export const EditForm = (props) => {
+    const [pin, setPin] = useState({
         title: props.title,
         description: props.description,
         hint: props.hint,
         destination: props.destination,
     });
+
+    const handleInputChange = (e) => {
+        setPin({ ...pin, [e.target.name]: e.target.value });
+        console.log("Pin: ", pin);
+    };
+
     return (
         <Modal {...props} centered show={props.show} style={{ zIndex: "1600" }}>
             <Modal.Header>
                 <Modal.Title>Edit a Pin</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <label className="d-block" htmlFor="title">
-                    Title
-                </label>
-                <input
-                    type="text"
-                    className="w-100"
-                    id="title"
-                    required
-                    defaultValue={defaultValues.title}
-                />
-                <label className="d-block" htmlFor="description">
-                    Description
-                </label>
-                <textarea
-                    className="w-100"
-                    id="description"
-                    defaultValue={defaultValues.description}
-                    required
-                />
-                <label className="d-block" htmlFor="hint">
-                    Hint
-                </label>
-                <textarea
-                    className="w-100"
-                    id="hint"
-                    defaultValue={defaultValues.hint}
-                    required
-                />
-                <label className="d-block" htmlFor="destination">
-                    Destination
-                </label>
-                <textarea
-                    className="w-100"
-                    id="destination"
-                    defaultValue={defaultValues.destination}
-                    required
-                />
+                <Form>
+                    <Form.Group>
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control
+                            type="title"
+                            id="title"
+                            name="title"
+                            value={pin.title}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows="2"
+                            id="description"
+                            name="description"
+                            value={pin.description}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Hint</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows="2"
+                            id="hint"
+                            name="hint"
+                            value={pin.hint}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Destination</Form.Label>
+                        <Form.Control
+                            id="destination"
+                            name="destination"
+                            value={pin.destination}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+                </Form>
             </Modal.Body>
             <Modal.Footer>
-                <button className="btn btn-secondary" onClick={props.cancel}>
+                <Button variant="secondary" onClick={props.cancel}>
                     Cancel
-                </button>
-                <button
-                    className="btn btn-primary"
+                </Button>
+                <Button
+                    variant="primary"
                     onClick={() => {
-                        const title =
-                            document.getElementById("title").value || "";
-                        const hint =
-                            document.getElementById("hint").value || "";
-                        const description =
-                            document.getElementById("description").value || "";
-                        const destination =
-                            document.getElementById("destination").value || "";
                         const query = { _id: props.objectID };
                         const update = {
-                            $set: {
-                                title: title,
-                                description: description,
-                                hint: hint,
-                                destination: destination,
-                            },
+                            $set: pin,
                         };
                         // update a pin on the database
                         db.collection("PINS")
                             .findOneAndUpdate(query, update)
-                            .then((objectID) => {
-                                setDefaultValues({
-                                    title: title,
-                                    description: description,
-                                    hint: hint,
-                                    destination: destination
-                                });
-                                props.cancel();
-                            });
+                            .then(props.cancel());
                     }}
                 >
                     Submit
-                </button>
+                </Button>
             </Modal.Footer>
         </Modal>
     );
@@ -232,8 +223,7 @@ const AddpinForm = (props) => {
                                 const options = { upsert: false };
                                 db.collection("MODULES")
                                     .findOneAndUpdate(query, update, options)
-                                    .then((res) => {
-                                    })
+                                    .then((res) => {})
                                     .catch(console.error);
                             });
                         props.onHide();
