@@ -14,6 +14,7 @@ import { Navbar } from "react-bootstrap";
 import ViewModules from "./components/ViewModules";
 import ManageModules from "./components/ManageModules";
 import ViewPinOnMap from "./components/ViewPinOnMap";
+import Translate from "./components/imageTranslate"
 
 import { Switch, Route, HashRouter } from "react-router-dom";
 
@@ -133,6 +134,7 @@ export default class App extends Component {
                         <Route exact path="/">
                             {this.Home}
                         </Route>
+                        <Route><Translate/></Route>
                     </Switch>
                 </div>
             </HashRouter>
