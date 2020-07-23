@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/ar-app/static/css/main.f95672be.chunk.css",
+    "main.css": "/ar-app/static/css/main.df34f475.chunk.css",
     "main.js": "/ar-app/static/js/main.051086ff.chunk.js",
     "main.js.map": "/ar-app/static/js/main.051086ff.chunk.js.map",
     "runtime-main.js": "/ar-app/static/js/runtime-main.19ee092f.js",
@@ -9,17 +9,17 @@
     "static/js/2.58a80dfc.chunk.js": "/ar-app/static/js/2.58a80dfc.chunk.js",
     "static/js/2.58a80dfc.chunk.js.map": "/ar-app/static/js/2.58a80dfc.chunk.js.map",
     "index.html": "/ar-app/index.html",
-    "precache-manifest.dee16316193b533f88d38e573fc4ccf3.js": "/ar-app/precache-manifest.dee16316193b533f88d38e573fc4ccf3.js",
+    "precache-manifest.06a13ed154e69462475ad643ec5d1ae2.js": "/ar-app/precache-manifest.06a13ed154e69462475ad643ec5d1ae2.js",
     "service-worker.js": "/ar-app/service-worker.js",
     "static/css/2.4c51a07b.chunk.css.map": "/ar-app/static/css/2.4c51a07b.chunk.css.map",
-    "static/css/main.f95672be.chunk.css.map": "/ar-app/static/css/main.f95672be.chunk.css.map",
+    "static/css/main.df34f475.chunk.css.map": "/ar-app/static/css/main.df34f475.chunk.css.map",
     "static/js/2.58a80dfc.chunk.js.LICENSE.txt": "/ar-app/static/js/2.58a80dfc.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.19ee092f.js",
     "static/css/2.4c51a07b.chunk.css",
     "static/js/2.58a80dfc.chunk.js",
-    "static/css/main.f95672be.chunk.css",
+    "static/css/main.df34f475.chunk.css",
     "static/js/main.051086ff.chunk.js"
   ]
 }
