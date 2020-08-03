@@ -101,7 +101,7 @@ class MapView extends Component{
     
   }
 
-  //find distance between two points in meters. Returns true for less than meters or false if not
+  //find distance between two points in meters. Returns true for less than the states meters
   getDistance(origin, destination) {
     var lon1 = this.toRadian(origin[1]);
     var lat1 = this.toRadian(origin[0]);
