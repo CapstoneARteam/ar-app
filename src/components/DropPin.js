@@ -108,7 +108,10 @@ const OpenFile = (props) =>{
             <img style={{
                     height: '200px',
                     width : '300px'
-                }} src={props.base64data}></img>
+                }} 
+                src={props.base64data}
+                onError={(e)=>{e.target.onerror = null; e.target.src=props.imgurl}}
+                ></img>
         </div>
         
     )
@@ -177,10 +180,7 @@ export const EditForm = (props) => {
                     </Form.Group>
                     <Form.Group>
                         <OpenFile base64data={props.base64data} setbase64data={props.setbase64data} imgurl={imgurl} setimgurl={setimgurl}></OpenFile>
-                        <img style={{
-                            height: '200px',
-                            width : '300px'
-                        }} src={imgurl}></img>
+                        
                     </Form.Group>
                 </Form>
 
@@ -235,7 +235,7 @@ export const EditForm = (props) => {
                                 props.cancel();
                             });
 
-*/
+*/                      
                         props.save(pin);
                     }}
                 >
