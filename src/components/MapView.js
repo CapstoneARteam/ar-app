@@ -219,6 +219,16 @@ class MapView extends Component{
                 <p>{this.state.modules[idx].description}</p>
                 <p>{this.state.modules[idx].owner_name}</p>
                 <p>{this.state.modules[idx].owner_email}</p>
+                <p>
+                  <img
+                    style={{
+                      height: '100px',
+                      width: '150px'
+                    }}
+                    src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + this.state.modules[idx].pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
+                    onError={(e)=>{e.target.onerror = null; e.target.src="https://capstoneusercontent.s3-us-west-2.amazonaws.com/ar.png"}}>
+                  </img>
+                </p>
                 <button
                   className="btn btn-primary"
                   onClick={() =>

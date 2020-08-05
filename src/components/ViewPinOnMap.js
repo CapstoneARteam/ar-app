@@ -287,7 +287,10 @@ class ViewPinOnMap extends Component {
                 <img style={{
                   height: '100px',
                   width: '150px'
-                }} src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + info._id.toString() + ".jpeg?versionid=latest&date=" + Date.now()}></img>
+                }} src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + info._id.toString() + ".jpeg?versionid=latest&date=" + Date.now()}
+                  onError={(e)=>{e.target.onerror = null; e.target.src="https://capstoneusercontent.s3-us-west-2.amazonaws.com/ar.png"}}
+                ></img>
+                
                 <button onClick={() => this.openGoogle(info.coords)} >Open Google Map</button>
               </Popup>
             </Marker>

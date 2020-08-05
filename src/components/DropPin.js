@@ -277,6 +277,7 @@ const PinMarker = (props) => {
                             else{
                                 //upload image
                                 HandleUpload(base64data, objectID._id.toString())
+                                setbase64data("default")
 
                             }
                             setModalShow(false);
@@ -364,6 +365,7 @@ const AddpinForm = (props) => {
                                 else{
                                     //upload image
                                     HandleUpload(props.base64data, res.insertedId.toString())
+                                    props.setbase64data("default")
                                 }
                                 // add the new pin to the map on success of adding the pin to
                                 // to the database
