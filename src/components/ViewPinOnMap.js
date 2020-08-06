@@ -204,7 +204,9 @@ class ViewPinOnMap extends Component {
     }, 1000);
     map.setView(coords, 13)
     const pin = this.refs.userloc.leafletElement
-    pin.openPopup()
+    setTimeout(function(){
+      pin.openPopup()
+    },400)
   }
   nextPin() {
     if(this.state.pins_array.length>0)
@@ -218,9 +220,11 @@ class ViewPinOnMap extends Component {
       if (temp >= this.state.pins_array.length - 1) {
         temp = this.state.pins_array.length - 1
       }
-      map.setView(this.state.pins_array[temp].coords, 13)
+      map.setView(this.state.pins_array[temp].coords)
       const pin = this.refs[temp].leafletElement
-      pin.openPopup()
+      setTimeout(function(){
+        pin.openPopup()
+      },400)
       this.setState({ current_pin_index: temp })
     }
   }
@@ -236,9 +240,11 @@ class ViewPinOnMap extends Component {
       if (temp <= 0) {
         temp = 0
       }
-      map.setView(this.state.pins_array[temp].coords, 13)
+      map.setView(this.state.pins_array[temp].coords)
       const pin = this.refs[temp].leafletElement
-      pin.openPopup()
+      setTimeout(function(){
+        pin.openPopup()
+      },400)
       this.setState({ current_pin_index: temp })
     }
   }
@@ -253,7 +259,9 @@ class ViewPinOnMap extends Component {
       }, 1000);
       map.setView(this.state.pins_array[this.state.current_pin_index].coords)
       const pin = this.refs[this.state.current_pin_index].leafletElement
-      pin.openPopup()
+      setTimeout(function(){
+        pin.openPopup()
+      },400)
     }
   }
   render() {
@@ -271,6 +279,11 @@ class ViewPinOnMap extends Component {
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
           {userLocation}
+          {function (){
+            setTimeout(function(){
+              this.getUserPosition()
+            },10000)
+          }}
 
           {this.state.pins_array.map((info, idx) => {
             var marker_icon;
