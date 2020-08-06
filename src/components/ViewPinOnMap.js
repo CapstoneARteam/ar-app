@@ -207,43 +207,54 @@ class ViewPinOnMap extends Component {
     pin.openPopup()
   }
   nextPin() {
-    const map = this.refs.map.leafletElement
-    map.doubleClickZoom.disable();
-    setTimeout(function () {
-      map.doubleClickZoom.enable();
-    }, 1000);
-    var temp = this.state.current_pin_index + 1
-    if (temp >= this.state.pins_array.length - 1) {
-      temp = this.state.pins_array.length - 1
+    if(this.state.pins_array.length>0)
+    {
+      const map = this.refs.map.leafletElement
+      map.doubleClickZoom.disable();
+      setTimeout(function () {
+        map.doubleClickZoom.enable();
+      }, 1000);
+      var temp = this.state.current_pin_index + 1
+      if (temp >= this.state.pins_array.length - 1) {
+        temp = this.state.pins_array.length - 1
+      }
+      map.setView(this.state.pins_array[temp].coords, 13)
+      const pin = this.refs[temp].leafletElement
+      pin.openPopup()
+      this.setState({ current_pin_index: temp })
     }
-    console.log("current pin index", this.state.current_pin_index)
-    map.setView(this.state.pins_array[temp].coords, 13)
-    const pin = this.refs[temp].leafletElement
-    pin.openPopup()
-    this.setState({ current_pin_index: temp })
   }
   previousPin() {
-    const map = this.refs.map.leafletElement
-    map.doubleClickZoom.disable();
-    setTimeout(function () {
-      map.doubleClickZoom.enable();
-    }, 1000);
-    var temp = this.state.current_pin_index - 1
-    if (temp <= 0) {
-      temp = 0
+    if(this.state.pins_array.length>0)
+    {
+      const map = this.refs.map.leafletElement
+      map.doubleClickZoom.disable();
+      setTimeout(function () {
+        map.doubleClickZoom.enable();
+      }, 1000);
+      var temp = this.state.current_pin_index - 1
+      if (temp <= 0) {
+        temp = 0
+      }
+      map.setView(this.state.pins_array[temp].coords, 13)
+      const pin = this.refs[temp].leafletElement
+      pin.openPopup()
+      this.setState({ current_pin_index: temp })
     }
-    map.setView(this.state.pins_array[temp].coords, 13)
-    const pin = this.refs[temp].leafletElement
-    pin.openPopup()
-    this.setState({ current_pin_index: temp })
   }
+
   currentPin() {
-    const map = this.refs.map.leafletElement
-    map.doubleClickZoom.disable();
-    setTimeout(function () {
-      map.doubleClickZoom.enable();
-    }, 1000);
-    map.setView(this.state.pins_array[this.state.current_pin_index].coords)
+    if(this.state.pins_array.length>0)
+    {
+      const map = this.refs.map.leafletElement
+      map.doubleClickZoom.disable();
+      setTimeout(function () {
+        map.doubleClickZoom.enable();
+      }, 1000);
+      map.setView(this.state.pins_array[this.state.current_pin_index].coords)
+      const pin = this.refs[this.state.current_pin_index].leafletElement
+      pin.openPopup()
+    }
   }
   render() {
     const userLocation = this.state.userLocationFound ? (
