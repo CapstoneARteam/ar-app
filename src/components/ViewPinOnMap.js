@@ -280,7 +280,7 @@ class ViewPinOnMap extends Component {
           />
           {userLocation}
           {function (){
-            setTimeout(function(){
+            setInterval(function(){
               this.getUserPosition()
             },10000)
           }}
