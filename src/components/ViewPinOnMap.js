@@ -119,8 +119,7 @@ class ViewPinOnMap extends Component {
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({ userLocation: [position.coords.latitude, position.coords.longitude], userLocationFound: true, currentLocation: [position.coords.latitude, position.coords.longitude] })
 
-      //console.log(this.state)
-
+      //console.log(this.state.userLocation)
     })
 
   }
@@ -151,7 +150,14 @@ class ViewPinOnMap extends Component {
   componentDidMount() {
     this.getUserPosition()
     this.drawpins()
+
+    this.interval = setInterval(this.getUserPosition, 10000);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
 
   async drawpins() {
     if (!this.client.auth.isLoggedIn) {
@@ -197,6 +203,8 @@ class ViewPinOnMap extends Component {
     return
   }
   centerMap(obj, coords) {
+    this.getUserPosition();
+
     const map = this.refs.map.leafletElement
     map.doubleClickZoom.disable();
     setTimeout(function () {
@@ -279,11 +287,6 @@ class ViewPinOnMap extends Component {
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
           {userLocation}
-          {function (){
-            setInterval(function(){
-              this.getUserPosition()
-            },10000)
-          }}
 
           {this.state.pins_array.map((info, idx) => {
             var marker_icon;
