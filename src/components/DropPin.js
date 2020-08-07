@@ -100,6 +100,14 @@ const OpenFile = (props) =>{
     console.log("open file")
    
     console.log(props.base64data)
+    var srcurl = ''
+    if(props.base64data === 'default'){
+        srcurl = props.imgurl
+    }
+    else{
+        srcurl = props.base64data
+    }
+    
     return(
         <div>
             <input type="file" multiple="single"  onChange={(e) => {
@@ -109,8 +117,8 @@ const OpenFile = (props) =>{
                     height: '200px',
                     width : '300px'
                 }} 
-                src={props.base64data}
-                onError={(e)=>{e.target.onerror = null; e.target.src=props.imgurl}}
+                src={srcurl}
+                onError={(e)=>{e.target.onerror = null; e.target.src='https://capstoneusercontent.s3-us-west-2.amazonaws.com/default.png'}}
                 ></img>
         </div>
         
@@ -186,7 +194,12 @@ export const EditForm = (props) => {
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.cancel}>
+                <Button variant="secondary" onClick={
+                    () =>{
+                        props.cancel()
+                        props.setbase64data('default')
+                    }
+                    }>
                     Cancel
                 </Button>
                 <Button
@@ -322,14 +335,17 @@ const AddpinForm = (props) => {
                     Image
                 </label>
 
-                <OpenFile base64data={props.base64data} setbase64data={props.setbase64data}> </OpenFile>
+                <OpenFile base64data={props.base64data} setbase64data={props.setbase64data} imgurl={""}> </OpenFile>
                 
 
 
 
             </Modal.Body>
             <Modal.Footer>
-                <button className="btn btn-secondary" onClick={props.onHide}>
+                <button className="btn btn-secondary" onClick={ ()=> {
+                    props.onHide() 
+                    props.setbase64data("default")
+                }}>
                     Cancel
                 </button>
                 <button
