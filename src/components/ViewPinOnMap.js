@@ -151,7 +151,14 @@ class ViewPinOnMap extends Component {
   componentDidMount() {
     this.getUserPosition()
     this.drawpins()
+
+    this.interval = setInterval(this.getUserPosition, 10000);
+
   }
+  componentWillUnmount() {
+    // Clear the interval right before component unmount
+    clearInterval(this.interval);
+}
 
   async drawpins() {
     if (!this.client.auth.isLoggedIn) {
@@ -279,12 +286,7 @@ class ViewPinOnMap extends Component {
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
           {userLocation}
-          {function (){
-            setInterval(function(){
-              this.getUserPosition()
-            },10000)
-          }}
-
+         
           {this.state.pins_array.map((info, idx) => {
             var marker_icon;
             if (idx == this.state.current_pin_index) {
