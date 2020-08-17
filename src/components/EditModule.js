@@ -18,7 +18,10 @@ import "./EditModule.css";
 
 import { EditForm } from "./DropPin";
 
-// @classdesc Used to make the Edit Module view.
+/**
+ * Used to make the Edit Module view.
+ * @classdesc
+ */
 export default class EditModule extends Component {
     // Creates a new EditModule
     // @param {Object} props
@@ -82,9 +85,12 @@ export default class EditModule extends Component {
         this.fetch_userinfo();
     }
 
-    // Gets the module ID from the routing parameter and uses it to get the
-    // associated module and pins for that module.
-    // @return {Promise} Query to set state.module_info and state.pins
+    /**
+     * Gets the module ID from the routing parameter and uses it to get the
+     * associated module and pins for that module.
+     * Query to set state.module_info and state.pins
+     * @return {Promise}
+     */
     async fetch_userinfo() {
         const query = {
             _id: ObjectId(this.props.match.params.id),
@@ -120,7 +126,9 @@ export default class EditModule extends Component {
             .catch(console.error);
     }
 
-    // copies textarea to clipboard and sets copy state
+    /**
+     * copies textarea to clipboard and sets copy state
+     */
     copy_clipboard() {
         const e = this.textArea;
         e.select();
@@ -128,27 +136,40 @@ export default class EditModule extends Component {
         this.setState({ copy: true });
     }
 
-    // Sets state.modal to true
+    /**
+     * Sets state.modal to true
+     * @param {modal_id} id 
+     */
     show_modal(id) {
         this.setState({ modal: id });
     }
 
-    // Sets state.modal2 to true
+    /**
+     * Sets state.modal2 to true
+     * @param {modal_id} id 
+     */
     show_modal2(id) {
         this.setState({ modal2: id });
     }
 
-    // Sets state.modal to false
+    /**
+     * Sets state.modal to false
+     */
     hide_modal() {
         this.setState({ modal: null });
     }
 
-    // Sets state.modal2 to false
+    /**
+     * Sets state.modal2 to false 
+     */
     hide_modal2() {
         this.setState({ modal2: null });
     }
 
-    // @return {JSX.Element} Modal to confirm deletion
+    /**
+     * Modal to confirm deletion
+     * @return {JSX.Element}
+     */
     delete_pin_modal() {
         var modal_message;
         if (this.state.idx < 0) modal_message = <p>Nothing to delete</p>;
@@ -201,7 +222,10 @@ export default class EditModule extends Component {
         );
     }
 
-    // @return {JSX.Element} Modal to confirm deletion of email
+    /**
+     * Modal to confirm deletion of email
+     * @return {JSX.Element} 
+     */
     delete_email_modal() {
         var modal_message;
         if (this.state.ind < 0) modal_message = <p>Nothing to delete</p>;
@@ -253,7 +277,9 @@ export default class EditModule extends Component {
         );
     }
 
-    // This function adds a email to MODULES.shared_with and avoids duplicates
+    /**
+     * This function adds a email to MODULES.shared_with and avoids duplicates
+     */
     add_email() {
         const query = { _id: this.state.module_info._id };
         const update = {
@@ -273,8 +299,10 @@ export default class EditModule extends Component {
             .catch(console.error);
     }
 
-    // This function will remove a email from MODULES.shared_with
-    // @param {number} ind - The index of the email to delete
+    /**
+     * This function will remove a email from MODULES.shared_with
+     * @param {number} ind 
+     */
     delete_email(ind) {
         const query = { _id: this.state.module_info._id };
         const update = {
@@ -294,8 +322,10 @@ export default class EditModule extends Component {
             .catch(console.error);
     }
 
-    // Creates the list of emails in MODULES.shared_with
-    // @return {JSX.Element} The list of emails.
+    /**
+     * List of emails in MODULES.shared_with
+     * @return {JSX.Element} 
+     */
     list_shared() {
         return this.state.module_info.shared_with.map((module_info, ind) => {
             return (
@@ -332,7 +362,10 @@ export default class EditModule extends Component {
         });
     }
 
-    // Modal to display MODULE.shared_with emails to allow adding and deleting
+    /**
+     * Modal to display MODULE.shared_with emails to allow adding and deleting
+     * @return {JSX.Element} 
+     */
     share_modal() {
         return (
             <Modal
@@ -455,8 +488,10 @@ export default class EditModule extends Component {
         );
     }
 
-    // @return {JSX.Element} Form to fill out module title, description, and
-    // public/private status
+    /**
+     * Form to fill out module title, description, and
+     * @return {JSX.Element}
+     */
     module_form() {
         return (
             <Form>
@@ -531,9 +566,11 @@ export default class EditModule extends Component {
         );
     }
 
-    // Creates the list of pins based on state.pins. Uses the react-movable
-    // library to make the list of pins draggable.
-    // @return {JSX.Element} The list of pins.
+    /**
+     * Creates the list of pins based on state.pins. Uses the react-movable
+     * library to make the list of pins draggable.
+     * @return {JSX.Element}
+     */
     list_pins() {
         return (
             <List
@@ -607,6 +644,10 @@ export default class EditModule extends Component {
         );
     }
 
+    /**
+     * Save pin to database
+     * @param {Pin} pin 
+     */
     save_pin(pin) {
         const query = { _id: pin._id };
         const update = {
@@ -627,8 +668,11 @@ export default class EditModule extends Component {
             });
     }
 
-    // This function will remove a pin from the DB and state.pins
-    // @param {number} idx - The index of the pin to delete
+    /**
+     * This function will remove a pin from the DB and state.pins
+     * @param {number} idx 
+     * @param {number}
+     */
     delete_pin(idx) {
         const query = { _id: this.state.pins[idx]._id };
         this.db
@@ -645,8 +689,10 @@ export default class EditModule extends Component {
             .catch(console.error);
     }
 
-    // Converts state.pins to a list of ObjectIDs, then updates
-    // state.module_info.pins based on the new list
+    /**
+     * Converts state.pins to a list of ObjectIDs, then updates
+     * state.module_info.pins based on the new list
+     */
     save_pin_order() {
         var module = this.state.module_info;
         const pin_ids = this.state.pins.map((pin) => {
@@ -656,7 +702,9 @@ export default class EditModule extends Component {
         this.setState({ module_info: module });
     }
 
-    // Saves the module to the DB
+    /**
+     * Saves the module to the DB
+     */
     save_module() {
         this.save_pin_order();
         const query = { _id: this.state.module_info._id };
@@ -677,7 +725,10 @@ export default class EditModule extends Component {
             .catch(console.error);
     }
 
-    // @return {JSX.Element} The EditModule componenet
+    /**
+     * The EditModule componenet
+     * @return {JSX.Element}
+     */
     render() {
         return (
             <Container

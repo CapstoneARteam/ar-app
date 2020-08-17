@@ -56,6 +56,10 @@ const floatStyle = {
   zIndex: 1500,
 };
 
+/**
+ * Used to make the Default Map View
+ * @classdesc
+ */
 class MapView extends Component{
   constructor(props){
     super(props)
@@ -86,7 +90,9 @@ class MapView extends Component{
   this.db = mongodb.db("APP"); 
   }
   
-
+  /**
+   * Gets userlocation and sets userLocation state
+   */
   getUserPosition(){
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({ userLocation : [position.coords.latitude, position.coords.longitude], userLocationFound:true, currentLocation : [position.coords.latitude, position.coords.longitude]})
@@ -97,6 +103,10 @@ class MapView extends Component{
   
   }
 
+  /**
+   * Gets user position and pins. 
+   * Sets interval so user position updates
+   */
   componentDidMount(){
     this.getUserPosition()
     this.getpins()
@@ -104,11 +114,19 @@ class MapView extends Component{
     this.interval = setInterval(this.getUserPosition, 10000);
   }
 
+  /**
+   * Stops interval from running constantly
+   */
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
-  //find distance between two points in meters. Returns true for less than meters or false if not
+  /**
+   * Finds distance between two points in meters, returns boolean
+   * @param {Location} origin 
+   * @param {Location} destination 
+   * @returns {boolean} 
+   */
   getDistance(origin, destination) {
     var lon1 = this.toRadian(origin[1]);
     var lat1 = this.toRadian(origin[0]);
@@ -130,10 +148,20 @@ class MapView extends Component{
       return false;
   }
 
+  /**
+   * Converts degree to radian
+   * @param {number} degree 
+   * @returns {number}
+   */
   toRadian(degree) {
     return degree*Math.PI/180;
   }
 
+  /**
+   * Queries database to get pins to display on map
+   * Only gets pins that are not owned by user, public, and not shared with user
+   * @return {Promise}
+   */
   async getpins() {
     if(!this.client.auth.isLoggedIn){
       return
@@ -186,6 +214,11 @@ class MapView extends Component{
     this.setState({ modules: modules});
   }
 
+  /**
+   * Center map view to userlocation
+   * @param {object} obj 
+   * @param {Location} coords 
+   */
   centerMap(obj,coords)
   {
     this.getUserPosition();
@@ -198,6 +231,10 @@ class MapView extends Component{
     map.setView(coords, 13);
   }
 
+  /**
+   * Displays map and pins
+   * @return {JSX.Element}
+   */
   render(){
     const userLocation = this.state.userLocationFound ? (
       <Marker position={this.state.userLocation} icon= {myIcon} >
