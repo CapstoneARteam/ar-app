@@ -95,7 +95,6 @@ class ViewPinOnMap extends Component {
     }
     this.getUserPosition = this.getUserPosition.bind(this)
     this.drawpins = this.drawpins.bind(this)
-    this.drawlines = this.drawlines.bind(this)
     this.openGoogle = this.openGoogle.bind(this)
     this.centerMap = this.centerMap.bind(this)
     this.nextPin = this.nextPin.bind(this)
@@ -119,45 +118,26 @@ class ViewPinOnMap extends Component {
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({ userLocation: [position.coords.latitude, position.coords.longitude], userLocationFound: true, currentLocation: [position.coords.latitude, position.coords.longitude] })
 
-      //console.log(this.state.userLocation)
+
     })
 
-  }
-
-  boundingRect(coords) {
-    return coords
-      .reduce((acc, curr) => {
-        const [lat, lng] = curr;
-        acc[0][0] = lat < acc[0][0] ? lat : acc[0][0];
-        acc[0][1] = lng < acc[0][1] ? lng : acc[0][1];
-        acc[1][0] = lat > acc[1][0] ? lat : acc[1][0];
-        acc[1][1] = lng > acc[1][1] ? lng : acc[1][1];
-        return acc;
-      }, [[90, 180], [-90, -180]]);
-  }
-
-  AddPaddingToRect(rect, percent = 0.10) {
-    const [latMin, lngMin] = rect[0];
-    const [latMax, lngMax] = rect[1];
-    const lngPad = (lngMax - lngMin) * percent;
-    const latPad = (latMax - latMin) * percent;
-    return [
-      [latMin - latPad, lngMin - lngPad],
-      [latMax + latPad, lngMax + lngPad]
-    ];
   }
 
   componentDidMount() {
     this.getUserPosition()
     this.drawpins()
 
+
     this.interval = setInterval(this.getUserPosition, 10000);
-  }
 
+  }
   componentWillUnmount() {
+    // Clear the interval right before component unmount
     clearInterval(this.interval);
-  }
-
+}
+  /**
+   * Retrieve pins from database using Module ID
+   */
 
   async drawpins() {
     if (!this.client.auth.isLoggedIn) {
@@ -179,31 +159,28 @@ class ViewPinOnMap extends Component {
         this.db.collection("PINS").aggregate(pipeline)
           .toArray()
           .then((res) => {
-            this.bounds = this.AddPaddingToRect(
-              this.boundingRect([...res.map(elem => elem.coords), this.state.currentLocation]));
             this.setState({ pins_array: res })
           });
 
       }
       )
   }
-  drawlines() {
-
-    if (this.state.pins_line.length > 0) {
-      return (
-        <Polyline positions={this.state.pins_line} color={'red'}>
-        </Polyline>
-      )
-    }
-    return
-  }
+ 
+  /**
+   * Open google map to that coords
+   * @param  {} coords
+   */
   openGoogle(coords) {
     var url = "http://maps.google.com?q=" + coords[0] + "," + coords[1]
     var win = window.open(url, '_blank');
     return
   }
-  centerMap(obj, coords) {
-    this.getUserPosition();
+  
+  /**
+   * Set map view to the user current location
+   * @param  {} coords
+   */
+  centerMap( coords) {
 
     const map = this.refs.map.leafletElement
     map.doubleClickZoom.disable();
@@ -216,6 +193,9 @@ class ViewPinOnMap extends Component {
       pin.openPopup()
     },400)
   }
+  /**
+   * Set map view to the next pin in the pin array
+   */
   nextPin() {
     if(this.state.pins_array.length>0)
     {
@@ -236,6 +216,9 @@ class ViewPinOnMap extends Component {
       this.setState({ current_pin_index: temp })
     }
   }
+  /**
+   * Set map view to the previous pin in the pin array
+   */
   previousPin() {
     if(this.state.pins_array.length>0)
     {
@@ -256,7 +239,9 @@ class ViewPinOnMap extends Component {
       this.setState({ current_pin_index: temp })
     }
   }
-
+  /**
+   * Set map view to the current pin in the pin array
+   */
   currentPin() {
     if(this.state.pins_array.length>0)
     {
@@ -287,7 +272,6 @@ class ViewPinOnMap extends Component {
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
           {userLocation}
-
           {this.state.pins_array.map((info, idx) => {
             var marker_icon;
             if (idx == this.state.current_pin_index) {
@@ -323,7 +307,7 @@ class ViewPinOnMap extends Component {
             </Marker>
 
           })}
-          <button style={floatStyle} onClick={() => this.centerMap(this, this.state.currentLocation)} >
+          <button style={floatStyle} onClick={() => this.centerMap( this.state.currentLocation)} >
             <div><FontAwesomeIcon icon={faStreetView} size="3x" /></div>
           </button>
           <ButtonGroup>

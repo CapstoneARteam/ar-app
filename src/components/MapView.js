@@ -102,12 +102,17 @@ class MapView extends Component{
     this.getpins()
 
     this.interval = setInterval(this.getUserPosition, 10000);
+
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
+  componentWillUnmount() {
+    // Clear the interval right before component unmount
+    clearInterval(this.interval);
+}
   //find distance between two points in meters. Returns true for less than meters or false if not
   getDistance(origin, destination) {
     var lon1 = this.toRadian(origin[1]);
