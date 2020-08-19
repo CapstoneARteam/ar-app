@@ -21,6 +21,7 @@ export default class ViewModules extends Component {
             },
             accessed_modules: [],
         };
+        this.module_results = null;
         
 
         //refs
@@ -48,7 +49,6 @@ export default class ViewModules extends Component {
     componentDidMount() {
         this.fetch_modules();
 
-        console.log(this.state);
     }
 
     async fetch_modules() {
@@ -138,72 +138,64 @@ export default class ViewModules extends Component {
         window.location.assign("#/module/" + id);
     }
 
-    add_module_cards(type) {
-        
-        if (this.state.modules.length === 0) return;
-
-        const mds = this.state.modules[type].map(function (module, idx) {
-            
-            return (
-                <div className="col-md-6 col-lg-4 " key={idx}>
-                    <Card
-                        className="h-100"
-                        style={{
-                            display: "fixed",
-
-                            Width: "25rem",
-                            margin: "0.25rem",
-                            justifyContent: "center",
-                            textAlign: "center",
-                        }}
-                    >
-                        <Card.Body>
-                            <Card.Img
-                                variant="top"
-                                src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + module.pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
-                                onError={(e)=>{e.target.onerror = null; e.target.src="https://capstoneusercontent.s3-us-west-2.amazonaws.com/ar.png"}}
-                            
-                            />
-                            <Card.Title>{module.title}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">
-                                by {module.owner_name} ({module.owner_email})
-                            </Card.Subtitle>
-                            <Card.Text>{module.description}</Card.Text>
-                            <div
-                                className="btn-toolbar"
-                                style={{
-                                    justifyContent: "center",
-                                }}
-                            >
-                                <div className="btn-group mr-1">
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={() =>
-                                            window.location.assign(
-                                                "#/module/" + module._id
-                                            )
-                                        }
-                                    >
-                                        View Details
-                                    </button>
-                                </div>
-
-                                <div className="btn-group mr-1">
-                                    <button className="btn btn-primary"
-                                        onClick={() =>
-                                            window.location.assign(
-                                                "#/module/" + module._id+"/pins"
-                                        )
-                                    }>
-                                        Start Module
-                                    </button>
-                                </div>
+    module_card (module, idx) {
+        const userid = this.state.user.user_id; 
+        return (
+            <div className="col-md-6 col-lg-4 " key={idx}>
+                <Card
+                    className="h-100"
+                    style={{
+                        display: "fixed",
+                        Width: "25rem",
+                        margin: "0.25rem",
+                        justifyContent: "center",
+                        textAlign: "center",
+                    }}
+                >
+                    <Card.Body>
+                        <Card.Img
+                            variant="top"
+                            src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + module.pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
+                        />
+                        <Card.Title>{module.title}</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">
+                            by {module.owner_name} ({module.owner_email})
+                        </Card.Subtitle>
+                        <Card.Text>{module.description}</Card.Text>
+                        <div
+                            className="btn-toolbar"
+                            style={{
+                                justifyContent: "center",
+                            }}
+                        >
+                            <div className="btn-group mr-1" style={{paddingTop: "10px"}}>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => window.location.assign(`#/module/${module._id}`)}
+                                >
+                                    View Details
+                                </button>
                             </div>
-                        </Card.Body>
-                    </Card>
-                </div>
-            );
-        });
+                            <div className="btn-group mr-1" style={{paddingTop: "10px"}}>
+                                <button className="btn btn-primary"
+                                    onClick={() =>{
+                                        window.location.assign(`#/module/${module._id}/pins/?user=${userid}`)
+                                    }
+                                }>
+                                    Start Module
+                                </button>
+                            </div>
+                        </div>
+                    </Card.Body>
+                </Card>
+            </div>
+        );
+    }
+
+    add_module_cards(type) {
+        if (this.state.modules.length === 0) return;
+        console.log(this.state.modules[type])
+        const mds = this.state.modules[type].map(this.module_card, this);
         return (
             <div
                 style={{
@@ -225,6 +217,38 @@ export default class ViewModules extends Component {
     }
 
     render() {
+        const url =this.props.location.pathname
+        var defaultTab= null
+        var my_modules_tab=null
+        if(url=="/modules/student")
+        {
+            defaultTab="Shared Modules"
+        }
+        else
+        {
+            defaultTab="My Modules"
+            my_modules_tab= (<Tab eventKey="My Modules" title="My Modules">
+                                {this.add_module_cards(0)}
+                            </Tab>)
+        }
+
+        const query_modules = () => {
+            const userQuery = this.goto_module_id.current.value;
+            try {
+                ObjectId(userQuery);
+                window.location.assign(`#/module/${userQuery}`);
+            }
+            catch (err) {
+                this.db.collection("MODULES")
+                    .find({ title: { $regex: userQuery, $options: "i" } })
+                    .asArray()
+                    .then(docs => {
+                        this.module_results = docs.map(this.module_card, this);
+                        this.forceUpdate();
+                    });
+            }
+        }
+
         return (
             <div
                 style={{
@@ -246,17 +270,14 @@ export default class ViewModules extends Component {
                     }}
                 >
                     <Tabs
-                        defaultActiveKey="My Modules"
+                        defaultActiveKey= {defaultTab}
                         transition={false}
                         style={{
                             textAlign: "center",
                             justifyContent: "center",
                         }}
                     >
-                        <Tab eventKey="My Modules" title="My Modules">
-                            {this.add_module_cards(0)}
-                        </Tab>
-
+                        {my_modules_tab}
                         <Tab eventKey="Shared Modules" title="Shared with me">
                             <div>
                                 {this.add_module_cards(1)}
@@ -266,31 +287,32 @@ export default class ViewModules extends Component {
                             </div>
                         </Tab>
 
-                        <Tab eventKey="Go To" title="Go To">
-                            <Form>
+                        <Tab eventKey="Go To" title="Search">
+                            <Form
+                                onSubmit={e => {
+                                    e.preventDefault();
+                                    query_modules();
+                                }}
+                            >
                                 <Form.Group controlId="formModuleId">
-                                    <Form.Label>Module ID:</Form.Label>
+                                    <Form.Label>Module</Form.Label>
                                     <Form.Control
                                         required
                                         type="string"
-                                        placeholder="Enter module id"
+                                        placeholder="Enter module title or id"
                                         ref={this.goto_module_id}
                                     />
                                 </Form.Group>
 
                                 <Button
                                     variant="primary"
-                                    onClick={() => {
-                                        window.location.assign(
-                                            "#/module/" +
-                                                this.goto_module_id.current
-                                                    .value
-                                        );
-                                    }}
+                                    style={{marginBottom: "10px"}}
+                                    onClick={query_modules}
                                 >
-                                    View Module
+                                    Search
                                 </Button>
                             </Form>
+                            {this.module_results}
                         </Tab>
                     </Tabs>
                 </div>

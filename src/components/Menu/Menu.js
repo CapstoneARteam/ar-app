@@ -5,8 +5,10 @@ import {
     GoogleRedirectCredential,
 } from "mongodb-stitch-browser-sdk";
 import { ObjectId } from "mongodb";
+import { db } from "../clientdb";
 import styled from "styled-components";
-
+import { userMode, toggle_usermode } from "../mode";
+ 
 class Menu extends Component {
     constructor(props) {
         super(props);
@@ -16,13 +18,9 @@ class Menu extends Component {
             userID: "",
             stitch_res: [],
             menuOpen: this.props.open,
+            usermode: userMode, //usermode  true = viewer, false = creator
         };
 
-        //bind functions
-        this.login = this.login.bind(this);
-        this.logout = this.logout.bind(this);
-        this.addamodule = this.addamodule.bind(this);
-        this.listmymodules = this.listmymodules.bind(this);
         console.log(props);
         const appId = "capstonear_app-xkqng";
         if (Stitch.hasAppClient(appId)) {
@@ -43,13 +41,22 @@ class Menu extends Component {
             this.client.auth.isLoggedIn &&
             this.client.auth.authInfo.userProfile
         ) {
+            const username = this.client.auth.authInfo.userProfile.data.first_name;
+            const userID = this.client.auth.authInfo.userId;
             this.setState({
-                username: this.client.auth.authInfo.userProfile.data.first_name,
+                username,
+                userID,
                 useremail: this.client.auth.authInfo.userProfile.data.email,
                 userID: this.client.auth.authInfo.userId,
                 userImg: this.client.auth.authInfo.userProfile.data.picture,
             });
-
+            db.collection("USERS")
+                .findOne({ $and: [ { user_id: userID }, { username }] })
+                .then((data)=> {
+                    if(data) return;
+                    db.collection("USERS")
+                        .findOneAndUpdate({ user_id: userID }, { $set: { username } })
+                })
             console.log(this.client.auth.authInfo.userProfile.data);
         }
     }
@@ -60,16 +67,6 @@ class Menu extends Component {
         const credential = new GoogleRedirectCredential();
         this.client.auth.loginWithRedirect(credential);
         console.log(this.state);
-    }
-
-    async logout() {
-        await this.client.auth.logout();
-        this.setState({
-            username: "",
-            useremail: "",
-            userID: "",
-        });
-        window.location.reload();
     }
 
     addamodule() {
@@ -97,7 +94,36 @@ class Menu extends Component {
             });
     }
 
+    set_usermode() {
+        this.setState({usermode: toggle_usermode()})
+    }
+
     render() {
+
+        //viewer menu
+        const viewrmenu = this.state.usermode ? (
+            <div>
+                <li>
+                <a href="#/modules/student">View Modules</a>
+                </li>
+                <br />
+            </div>
+        ) : null
+
+        //creator menu
+
+        const creatormenu = this.state.usermode ? null : (
+            <div>
+                <li>
+                    <a href="#/modules/instructor">View Modules</a>
+                </li>
+                <br />
+                <li>
+                    <a href="#/modules/edit">Create Modules</a>
+                </li>
+                <br />
+            </div>
+        ) 
         return (
             <StyledMenu
                 open={this.props.open}
@@ -121,7 +147,30 @@ class Menu extends Component {
                             top: "1rem",
                         }}
                     ></img>
-
+                    <div>
+                        <div className="radio">
+                            <label>
+                                <input style={{
+                                    
+                                }} 
+                                type="radio" 
+                                value="option1" 
+                                
+                                checked={this.state.usermode} 
+                                onClick={()=>this.set_usermode()}
+                                />
+                                Student
+                            </label>
+                        </div>
+                        <div className="radio">
+                            <label>
+                                <input type="radio" value="option1" checked={!this.state.usermode}
+                                onClick={()=>this.set_usermode()}
+                                />
+                                Instructor
+                            </label>
+                        </div>
+                    </div>
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -133,32 +182,43 @@ class Menu extends Component {
                         {" "}
                         Welcome, <br /> {this.state.username}{" "}
                     </p>
+
                 </div>
 
+               
+                
+
                 <ul
-                    style={{ listStyleType: "none", paddingLeft: 0 }}
+                    style={{ listStyleType: "none", paddingLeft: 0}}
                     onClick={() => {
                         this.props.center_container.center_container.current.style.opacity = 1;
                         this.props.setOpen(!this.props.open);
                     }}
                 >
+                    
                     <li>
                         <a href="#/">Home</a>
                     </li>
                     <br />
-                    <li>
-                        <a href="#/modules">My Modules</a>
-                    </li>
-                    <br />
-                    <li>
-                        <a href="#/modules/edit">Manage Modules</a>
-                    </li>
-                    <br />
+                    
+                    {viewrmenu}
+                    {creatormenu}
+
                 </ul>
 
                 <a
                     href="#/logout"
-                    onClick={this.logout}
+                    onClick={() => {
+                        this.client.auth.logout()
+                            .then(() => {
+                                this.setState({
+                                    username: "",
+                                    useremail: "",
+                                    userID: "",
+                                });
+                                window.location.reload();
+                            })
+                    }}
                     style={{
                         position: "absolute",
                         fontSize: "1rem",
@@ -191,11 +251,9 @@ const StyledMenu = styled.nav`
     bottom: 0;
     transition: transform 0.3s ease-in-out;
     z-index: 1501;
-
     @media (max-width: 150px) {
         width: 100%;
     }
-
     a {
         font-size: 1.5rem;
         text-transform: uppercase;
@@ -205,12 +263,10 @@ const StyledMenu = styled.nav`
         color: #FFFFF;
         text-decoration: none;
         transition: color 0.3s linear;
-
         @media (max-width: 150px) {
             font-size: 1rem;
             text-align: center;
         }
-
         &:hover {
             color: #343078;
         }
