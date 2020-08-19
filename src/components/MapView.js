@@ -129,7 +129,7 @@ class MapView extends Component{
     var d = c * EARTH_RADIUS * 1000;
 
     // 24000 meters ~ 15 miles
-    if(d < 24000)
+    if(d < 35000)
       return true;
     else
       return false;
@@ -193,14 +193,26 @@ class MapView extends Component{
 
   centerMap(obj,coords)
   {
-    this.getUserPosition();
-
-    const map = this.refs.map.leafletElement;
-    map.doubleClickZoom.disable();
-    setTimeout(function() {
+    if(this.state.userLocation.length!=0)
+    {
+      const map = this.refs.map.leafletElement;
+      map.doubleClickZoom.disable();
+      setTimeout(function() {
          map.doubleClickZoom.enable();
-    }, 1000);
-    map.setView(coords, 13);
+      }, 1000);
+      map.setView(coords, 13);
+    }
+    else
+    {
+      var zip_code = prompt("Please enter your zip code");
+      if (zip_code != null) {
+        fetch('https://public.opendatasoft.com/api/records/1.0/search/?dataset=us-zip-code-latitude-and-longitude&q='+zip_code+'&facet=state&facet=timezone&facet=dst')
+        .then(response => response.json())
+        .then(data => this.setState({currentLocation:data.records[0].fields.geopoint,userLocation:data.records[0].fields.geopoint}));
+        //console.log(data.records[0].fields.geopoint)) 
+      }
+    }
+
   }
 
   render(){
@@ -208,7 +220,11 @@ class MapView extends Component{
       <Marker position={this.state.userLocation} icon= {myIcon} >
         <Popup >Your location</Popup>
       </Marker>
-    ) : null
+    ) :  (
+      <Marker position={this.state.currentLocation} icon= {myIcon} >
+        <Popup >Your location</Popup>
+      </Marker>
+    )
 
     return (
       <div id='leaflet-container'>
