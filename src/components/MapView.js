@@ -5,7 +5,7 @@ import L from 'leaflet'
 import {Stitch, RemoteMongoClient, GoogleRedirectCredential} from "mongodb-stitch-browser-sdk"
 import { ObjectId } from 'mongodb'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStreetView } from '@fortawesome/free-solid-svg-icons'
+import { faStreetView,faSearchLocation } from '@fortawesome/free-solid-svg-icons'
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -55,6 +55,19 @@ const floatStyle = {
   boxShadow: "2px 2px 3px #999",
   zIndex: 1500,
 };
+const searchStyle = {
+  position: "fixed",
+  width: "60px",
+  height: "60px",
+  bottom: "40px",
+  right: "120px",
+  backgroundColor: "purple",
+  color: "#FFF",
+  borderRadius: "50px",
+  textAlign: "center",
+  boxShadow: "2px 2px 3px #999",
+  zIndex: 1500,
+};
 
 class MapView extends Component{
   constructor(props){
@@ -74,6 +87,8 @@ class MapView extends Component{
   this.getDistance = this.getDistance.bind(this)
   this.toRadian = this.toRadian.bind(this)
   this.centerMap = this.centerMap.bind(this)
+  this.newZip = this.newZip.bind(this)
+
 
   const appId = "capstonear_app-xkqng"
   this.client = Stitch.hasAppClient(appId)
@@ -101,18 +116,9 @@ class MapView extends Component{
     this.getUserPosition()
     this.getpins()
 
-    this.interval = setInterval(this.getUserPosition, 10000);
 
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  componentWillUnmount() {
-    // Clear the interval right before component unmount
-    clearInterval(this.interval);
-}
   //find distance between two points in meters. Returns true for less than meters or false if not
   getDistance(origin, destination) {
     var lon1 = this.toRadian(origin[1]);
@@ -195,12 +201,15 @@ class MapView extends Component{
   {
     if(this.state.userLocation.length!=0)
     {
+      this.getUserPosition()
       const map = this.refs.map.leafletElement;
       map.doubleClickZoom.disable();
       setTimeout(function() {
          map.doubleClickZoom.enable();
       }, 1000);
       map.setView(coords, 13);
+      
+     
     }
     else
     {
@@ -209,10 +218,33 @@ class MapView extends Component{
         fetch('https://public.opendatasoft.com/api/records/1.0/search/?dataset=us-zip-code-latitude-and-longitude&q='+zip_code+'&facet=state&facet=timezone&facet=dst')
         .then(response => response.json())
         .then(data => this.setState({currentLocation:data.records[0].fields.geopoint,userLocation:data.records[0].fields.geopoint}));
-        //console.log(data.records[0].fields.geopoint)) 
+        //console.log(data.records[0].fields.geopoint))
+        this.getpins(); 
+        
       }
     }
 
+  }
+  newZip()
+  {
+    //var zip_code = null;
+    var zip_code = prompt("Please enter your zip code");
+      if (zip_code != null) {
+        fetch('https://public.opendatasoft.com/api/records/1.0/search/?dataset=us-zip-code-latitude-and-longitude&q='+zip_code+'&facet=state&facet=timezone&facet=dst')
+        .then(response => response.json())
+        .then(data => this.setState({currentLocation:data.records[0].fields.geopoint,userLocation:data.records[0].fields.geopoint}))
+        .catch( (err) => {
+          console.log(err)
+          alert("you have entered a nuclear code")
+          }
+            
+         )
+        
+        //console.log(data.records[0].fields.geopoint))
+        this.getpins(); 
+
+
+      }
   }
 
   render(){
@@ -269,6 +301,10 @@ class MapView extends Component{
           <button style={floatStyle} onClick={()=>this.centerMap(this,this.state.userLocation)} >
             <div><FontAwesomeIcon icon={faStreetView} size="3x" /></div>
           </button>
+          <button style={searchStyle} onClick={()=>this.newZip()} >
+            <div><FontAwesomeIcon icon={faSearchLocation} size="3x" /></div>
+          </button>
+          
       </Map>
       </div>
     );

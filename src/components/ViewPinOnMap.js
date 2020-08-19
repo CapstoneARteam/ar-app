@@ -205,7 +205,7 @@ class ViewPinOnMap extends Component {
       if (zip_code != null) {
         fetch('https://public.opendatasoft.com/api/records/1.0/search/?dataset=us-zip-code-latitude-and-longitude&q='+zip_code+'&facet=state&facet=timezone&facet=dst')
         .then(response => response.json())
-        .then(data => this.setState({currentLocation:data.records[0].fields.geopoint}));
+        .then(data => this.setState({currentLocation:data.records[0].fields.geopoint,userLocation:data.records[0].fields.geopoint}));
         //console.log(data.records[0].fields.geopoint))
       }
     }
