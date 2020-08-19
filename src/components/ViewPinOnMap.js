@@ -123,17 +123,13 @@ class ViewPinOnMap extends Component {
       this.setState({ userLocation: [position.coords.latitude, position.coords.longitude], userLocationFound: true, currentLocation: [position.coords.latitude, position.coords.longitude] })
 
     })
-
-
-    })
-
   }
 
   componentDidMount() {
     this.getUserPosition()
     this.drawpins()
 
-    this.interval = setInterval(this.getUserPosition, 10000);
+    //this.interval = setInterval(this.getUserPosition, 10000);
    
 
   }
@@ -218,51 +214,70 @@ class ViewPinOnMap extends Component {
    * Set map view to the next pin in the pin array
    */
   nextPin() {
-    const map = this.refs.map.leafletElement
-    map.doubleClickZoom.disable();
-    setTimeout(function () {
-      map.doubleClickZoom.enable();
-    }, 1000);
-    var temp = this.state.current_pin_index + 1
-    if (temp >= this.state.pins_array.length - 1) {
-      temp = this.state.pins_array.length - 1
-    }
-    console.log("current pin index", this.state.current_pin_index)
-    map.setView(this.state.pins_array[temp].coords, 13)
-    const pin = this.refs[temp].leafletElement
-    pin.openPopup()
-    this.setState({ current_pin_index: temp })
+    if(this.state.pins_array.length>0)
+    {
+      const map = this.refs.map.leafletElement
+      map.doubleClickZoom.disable();
+      setTimeout(function () {
+        map.doubleClickZoom.enable();
+      }, 1000);
+      var temp = this.state.current_pin_index + 1
+      if (temp >= this.state.pins_array.length - 1) {
+        temp = this.state.pins_array.length - 1
+      }
+      map.setView(this.state.pins_array[temp].coords)
+      const pin = this.refs[temp].leafletElement
+      setTimeout(function(){
+        pin.openPopup()
+      },400)
+      this.setState({ current_pin_index: temp })
+  
   }
+}
   /**
    * Set map view to the previous pin in the pin array
    */
   previousPin() {
-    const map = this.refs.map.leafletElement
-    map.doubleClickZoom.disable();
-    setTimeout(function () {
-      map.doubleClickZoom.enable();
-    }, 1000);
-    var temp = this.state.current_pin_index - 1
-    if (temp <= 0) {
-      temp = 0
-    }
-    map.setView(this.state.pins_array[temp].coords, 13)
-    const pin = this.refs[temp].leafletElement
-    pin.openPopup()
-    this.setState({ current_pin_index: temp })
+
+    if(this.state.pins_array.length>0)
+    {
+      const map = this.refs.map.leafletElement
+      map.doubleClickZoom.disable();
+      setTimeout(function () {
+        map.doubleClickZoom.enable();
+      }, 1000);
+      var temp = this.state.current_pin_index - 1
+      if (temp <= 0) {
+        temp = 0
+      }
+      map.setView(this.state.pins_array[temp].coords)
+      const pin = this.refs[temp].leafletElement
+      setTimeout(function(){
+        pin.openPopup()
+      },400)
+      this.setState({ current_pin_index: temp })
   }
+}
 
   /**
    * Set map view to the current pin in the pin array
    */
   currentPin() {
-    const map = this.refs.map.leafletElement
-    map.doubleClickZoom.disable();
-    setTimeout(function () {
-      map.doubleClickZoom.enable();
-    }, 1000);
-    map.setView(this.state.pins_array[this.state.current_pin_index].coords)
+    if(this.state.pins_array.length>0)
+    {
+      const map = this.refs.map.leafletElement
+      map.doubleClickZoom.disable();
+      setTimeout(function () {
+        map.doubleClickZoom.enable();
+      }, 1000);
+      map.setView(this.state.pins_array[this.state.current_pin_index].coords)
+      const pin = this.refs[this.state.current_pin_index].leafletElement
+      setTimeout(function(){
+        pin.openPopup()
+      },400)
+    }
   }
+
   toggle_modal() {
     var finish_modal = !this.state.finish_modal
     this.setState({finish_modal: finish_modal})
@@ -367,7 +382,10 @@ class ViewPinOnMap extends Component {
                 <img style={{
                   height: 'auto',
                   width: '100%'
-                }} src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + info._id.toString() + ".jpeg?versionid=latest&date=" + Date.now()}></img>
+                }} src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + info._id.toString() + ".jpeg?versionid=latest&date=" + Date.now()}  
+                
+                 onError={(e)=>{e.target.onerror = null; e.target.src="https://capstoneusercontent.s3-us-west-2.amazonaws.com/ar.png"}}	 
+                ></img>
                 <Form style={{ paddingTop: "10px" }}>
                   {
                     (() => {

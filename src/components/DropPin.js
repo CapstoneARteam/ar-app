@@ -6,6 +6,8 @@ import { AwsServiceClient, AwsRequest } from 'mongodb-stitch-browser-services-aw
 import { Button, Form, Modal, Dropdown } from "react-bootstrap";
 import { ObjectId } from "mongodb";
 import { client, db } from "./clientdb"
+var base64data = 'default'
+
 
 var globalPosition = {};
 
@@ -64,6 +66,17 @@ const HandleUpload = (base64data, id) => {
 }
 
 const OpenFile = (props) => {
+    console.log("open file")
+
+    console.log(props.base64data)
+    var srcurl = ''
+    if(props.base64data === 'default'){
+        srcurl = props.imgurl
+    }
+    else{
+        srcurl = props.base64data
+    }
+
     return (
         <div>
             <input type="file" multiple="single" onChange={(e) => {
@@ -71,8 +84,11 @@ const OpenFile = (props) => {
             }}></input>
             <img style={{
                 height: '200px',
-                width: '300px'
-            }} src={props.base64data}></img>
+                width : '300px'
+                    }} 
+                src={srcurl}
+                onError={(e)=>{e.target.onerror = null; e.target.src='https://capstoneusercontent.s3-us-west-2.amazonaws.com/default.png'}}></img>
+              
         </div>
     )
 }
@@ -145,7 +161,12 @@ export const EditForm = (props) => {
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.cancel}>
+            <Button variant="secondary" onClick={
+                    () =>{
+                        props.cancel()
+                        props.setbase64data('default')
+                    }
+                    }>
                     Cancel
                 </Button>
                 <Button
@@ -233,6 +254,7 @@ const PinMarker = (props) => {
                             else {
                                 //upload image
                                 HandleUpload(base64data, objectID._id.toString())
+                                setbase64data("default")
 
                             }
                             setModalShow(false);
@@ -311,7 +333,10 @@ const AddpinForm = (props) => {
                 <OpenFile base64data={props.base64data} setbase64data={props.setbase64data}> </OpenFile>
             </Modal.Body>
             <Modal.Footer>
-                <button className="btn btn-secondary" onClick={props.onHide}>
+            <button className="btn btn-secondary" onClick={ ()=> {
+                    props.onHide() 
+                    props.setbase64data("default")
+                }}>
                     Cancel
                 </button>
                 <button
@@ -344,6 +369,8 @@ const AddpinForm = (props) => {
                                 else {
                                     //upload image
                                     HandleUpload(props.base64data, res.insertedId.toString())
+                                    props.setbase64data("default")
+
                                 }
                                 // add the new pin to the map on success of adding the pin to
                                 // to the database

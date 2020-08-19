@@ -68,6 +68,16 @@ class Menu extends Component {
         this.client.auth.loginWithRedirect(credential);
         console.log(this.state);
     }
+    async logout() {
+        await this.client.auth.logout();
+        this.setState({
+            username: "",
+            useremail: "",
+            userID: "",
+        });
+        window.location.reload();
+    }
+
 
     addamodule() {
         this.db
@@ -208,17 +218,7 @@ class Menu extends Component {
 
                 <a
                     href="#/logout"
-                    onClick={() => {
-                        this.client.auth.logout()
-                            .then(() => {
-                                this.setState({
-                                    username: "",
-                                    useremail: "",
-                                    userID: "",
-                                });
-                                window.location.reload();
-                            })
-                    }}
+                    onClick={this.logout}
                     style={{
                         position: "absolute",
                         fontSize: "1rem",
