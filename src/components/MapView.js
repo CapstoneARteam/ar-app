@@ -106,7 +106,7 @@ class MapView extends Component{
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({ userLocation : [position.coords.latitude, position.coords.longitude], userLocationFound:true, currentLocation : [position.coords.latitude, position.coords.longitude]})
       
-      //console.log(this.state)
+      console.log(this.state)
       
     })
   
@@ -115,7 +115,6 @@ class MapView extends Component{
   componentDidMount(){
     this.getUserPosition()
     this.getpins()
-
 
   }
 
@@ -164,8 +163,8 @@ class MapView extends Component{
           return curr;
         })
         this.setState({pin_array: res})
-        //console.log("Pin Array: ", res);
-        //console.log("Modules: ", this.state.modules);
+        console.log("Pin Array: ", res);
+        console.log("Modules: ", this.state.modules);
       })
 
     await this.db
@@ -179,7 +178,7 @@ class MapView extends Component{
           curr = curr.coords;
           return curr;
         })
-        //console.log("Pins: ", res);
+        console.log("Pins: ", res);
         this.setState({ pins: res });
       });
 
@@ -199,6 +198,7 @@ class MapView extends Component{
 
   centerMap(obj,coords)
   {
+
     if(this.state.userLocation.length!=0)
     {
       this.getUserPosition()
@@ -279,16 +279,6 @@ class MapView extends Component{
                 <p>{this.state.modules[idx].description}</p>
                 <p>{this.state.modules[idx].owner_name}</p>
                 <p>{this.state.modules[idx].owner_email}</p>
-                <p>
-                  <img
-                    style={{
-                      height: '100px',
-                      width: '150px'
-                    }}
-                    src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + this.state.modules[idx].pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
-                    onError={(e)=>{e.target.onerror = null; e.target.src="https://capstoneusercontent.s3-us-west-2.amazonaws.com/ar.png"}}>
-                  </img>
-                </p>
                 <button
                   className="btn btn-primary"
                   onClick={() =>

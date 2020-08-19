@@ -14,7 +14,7 @@ import { Navbar } from "react-bootstrap";
 import ViewModules from "./components/ViewModules";
 import ManageModules from "./components/ManageModules";
 import ViewPinOnMap from "./components/ViewPinOnMap";
-
+import Completed from "./components/completed";
 import { Switch, Route, HashRouter } from "react-router-dom";
 
 export default class App extends Component {
@@ -24,16 +24,17 @@ export default class App extends Component {
         this.client = Stitch.hasAppClient(appId)
             ? Stitch.getAppClient(appId)
             : Stitch.initializeDefaultAppClient(appId);
-
+        const url = window.location.href;
+        const cleanUrl = url.split(/\?fbclid=.*#/).join("#");
         if (this.client.auth.hasRedirectResult()) {
-            console.log("has results");
-
+            if (cleanUrl !== url)
+                window.location.assign(cleanUrl);
             this.client.auth.handleRedirectResult().then((user) => {
                 window.location.assign("/");
             });
-        } else {
-            //window.location.replace('#/login')
         }
+        if (cleanUrl !== url)
+            window.location.assign(cleanUrl);
         this.state = {
             isLoggedIn: false,
         };
@@ -110,7 +111,8 @@ export default class App extends Component {
                             path="/modules/edit"
                             component={ManageModules}
                         />
-                        <Route exact path="/modules" component={ViewModules} />
+                        <Route exact path="/modules/student" component={ViewModules} />
+                        <Route exact path="/modules/instructor" component={ViewModules} />
 
                         <Route
                             exact
@@ -122,6 +124,10 @@ export default class App extends Component {
                             path="/module/:id/pins"
                             component={ViewPinOnMap}
                         />
+    
+                        <Route path="/completed/:module/:userid">
+                            <Completed/>
+                        </Route>
 
                         <Route
                             exact
