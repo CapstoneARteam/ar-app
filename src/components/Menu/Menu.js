@@ -143,16 +143,6 @@ class Menu extends Component {
                         top: "2rem",
                     }}
                 >
-                    <div>
-                        <button type="button" 
-                            className={`btn btn-md btn-toggle ${this.state.usermode || "active"}`} 
-                            data-toggle="button" aria-pressed={this.state.usermode || "true"} 
-                            autoComplete="off"
-                            onClick={()=>this.set_usermode()}
-                        >
-                            <div className="handle" />
-                        </button>
-                    </div>
                     <img
                         src={this.state.userImg}
                         alt="test"
@@ -207,6 +197,21 @@ class Menu extends Component {
                 >
                     Log Out
                 </a>
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: "1rem"
+                    }}
+                >
+                    <button type="button" 
+                        className={`btn btn-md btn-toggle ${this.state.usermode || "active"}`} 
+                        data-toggle="button" aria-pressed={this.state.usermode || "true"} 
+                        autoComplete="off"
+                        onClick={()=>this.set_usermode()}
+                    >
+                        <div className="handle" />
+                    </button>
+                </div>
             </StyledMenu>
         );
     }
