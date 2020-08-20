@@ -156,8 +156,10 @@ export default class ViewModules extends Component {
                         <Card.Img
                             variant="top"
                             src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + module.pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
-                            onError={(e)=>{e.target.onerror = null; e.target.src="https://capstoneusercontent.s3-us-west-2.amazonaws.com/ar.png"}}
-
+                            onError={(e)=>{
+                                e.target.onerror = null;
+                                e.target.src=`${process.env.PUBLIC_URL}/babelcat.jpg`
+                            }}
                         />
                         <Card.Title>{module.title}</Card.Title>
                         <Card.Subtitle className="mb-2 text-muted">
