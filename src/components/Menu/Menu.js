@@ -111,30 +111,25 @@ class Menu extends Component {
 
     render() {
 
-        //viewer menu
-        const viewrmenu = this.state.usermode ? (
+        const creatormenu = (
             <div>
-                <li>
-                <a href="#/modules/student">View Modules</a>
+                <li style={{display: "block"}}>
+                    <a href={`#/modules/${this.state.usermode ? "student": "instructor"}`}>View Modules</a>
                 </li>
-                <br />
-            </div>
-        ) : null
-
-        //creator menu
-
-        const creatormenu = this.state.usermode ? null : (
-            <div>
-                <li>
-                    <a href="#/modules/instructor">View Modules</a>
-                </li>
-                <br />
-                <li>
+                <li 
+                    style={{
+                        display: "flex",
+                        transition: "transform 0.3s ease-in-out",
+                        flexDirection: "column",
+                        transform: this.state.usermode ? "translateX(150%)" : "translateX(0%)"
+                    }}
+                >
                     <a href="#/modules/edit">Create Modules</a>
                 </li>
                 <br />
             </div>
-        ) 
+        )
+
         return (
             <StyledMenu
                 open={this.props.open}
@@ -197,10 +192,7 @@ class Menu extends Component {
                         <a href="#/">Home</a>
                     </li>
                     <br />
-                    
-                    {viewrmenu}
                     {creatormenu}
-
                 </ul>
 
                 <a
