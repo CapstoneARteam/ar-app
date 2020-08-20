@@ -110,26 +110,6 @@ class Menu extends Component {
     }
 
     render() {
-
-        const creatormenu = (
-            <div>
-                <li style={{display: "block"}}>
-                    <a href={`#/modules/${this.state.usermode ? "student": "instructor"}`}>View Modules</a>
-                </li>
-                <li 
-                    style={{
-                        display: "flex",
-                        transition: "transform 0.3s ease-in-out",
-                        flexDirection: "column",
-                        transform: this.state.usermode ? "translateX(150%)" : "translateX(0%)"
-                    }}
-                >
-                    <a href="#/modules/edit">Create Modules</a>
-                </li>
-                <br />
-            </div>
-        )
-
         return (
             <StyledMenu
                 open={this.props.open}
@@ -137,39 +117,29 @@ class Menu extends Component {
                 center_container={this.props.center_container}
                 style={{}}
             >
-                <div
-                    style={{
-                        position: "absolute",
-                        top: "2rem",
-                    }}
-                >
+                <div style={{marginBottom: "2rem", marginTop: "1rem"}}>
                     <img
                         src={this.state.userImg}
                         alt="test"
                         style={{
-                            maxHeigh: "80px",
-                            maxWidth: "80px",
+                            maxHeigh: "40px",
+                            maxWidth: "40px",
                             borderRadius: "50%",
                             top: "1rem",
                         }}
-                    ></img>
-                    <p
+                    />
+                    <span
                         style={{
+                            position: "relative",
+                            top: "5px",
+                            marginLeft: "1rem",
                             fontSize: "1.5rem",
-                            top: "4rem",
                             color: "white",
-                            zIndex: 1002,
                         }}
                     >
-                        {" "}
-                        Welcome, <br /> {this.state.username}{" "}
-                    </p>
-
+                        {this.state.username}
+                    </span>
                 </div>
-
-               
-                
-
                 <ul
                     style={{ listStyleType: "none", paddingLeft: 0}}
                     onClick={() => {
@@ -177,32 +147,34 @@ class Menu extends Component {
                         this.props.setOpen(!this.props.open);
                     }}
                 >
-                    
                     <li>
                         <a href="#/">Home</a>
                     </li>
-                    <br />
-                    {creatormenu}
+                    <li>
+                        <a href={`#/modules/${this.state.usermode ? "student": "instructor"}`}>View </a>
+                    </li>
+                    <li 
+                        style={{
+                            display: "flex",
+                            transition: "transform 0.3s ease-in-out",
+                            flexDirection: "column",
+                            transform: this.state.usermode ? "translateX(150%)" : "translateX(0%)",
+                        }}
+                    >
+                        <a style={{ paddingTop: "0rem"}} href="#/modules/edit">Create</a>
+                    </li>
+                    <li>
+                        <a
+                            href="#/logout"
+                            onClick={this.logout}
+                            style={{ fontSize: "1rem" }}
+                        >
+                            Log Out
+                        </a>
+                    </li>
                 </ul>
 
-                <a
-                    href="#/logout"
-                    onClick={this.logout}
-                    style={{
-                        position: "absolute",
-                        fontSize: "1rem",
-                        fontColor: "#00000",
-                        bottom: "10rem",
-                    }}
-                >
-                    Log Out
-                </a>
-                <div
-                    style={{
-                        position: "absolute",
-                        bottom: "1rem"
-                    }}
-                >
+                <div style={{ position: "absolute", bottom: "1rem" }}>
                     <button type="button" 
                         className={`btn btn-md btn-toggle ${this.state.usermode || "active"}`} 
                         data-toggle="button" aria-pressed={this.state.usermode || "true"} 
@@ -222,11 +194,9 @@ class Menu extends Component {
 const StyledMenu = styled.nav`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     background: #343a40;
-    transform: ${({ open }) =>
-        open ? "translateX(-100)" : "translateX(100%)"};
-    height: 100vh;
+    transform: ${({ open }) => open ? "translateX(-100)" : "translateX(100%)"};
+    height: ${window.innerHeight - (window.innerHeight*.02)}px;
     text-align: left;
     padding: 2rem;
     position: fixed;
@@ -235,6 +205,7 @@ const StyledMenu = styled.nav`
     bottom: 0;
     transition: transform 0.3s ease-in-out;
     z-index: 1501;
+    min-width: 300px;
     @media (max-width: 150px) {
         width: 100%;
     }
