@@ -8,6 +8,7 @@ import { ObjectId } from "mongodb";
 import { db } from "../clientdb";
 import styled from "styled-components";
 import { userMode, toggle_usermode } from "../mode";
+import './toggle.css';
  
 class Menu extends Component {
     constructor(props) {
@@ -147,6 +148,16 @@ class Menu extends Component {
                         top: "2rem",
                     }}
                 >
+                    <div>
+                        <button type="button" 
+                            className={`btn btn-md btn-toggle ${this.state.usermode || "active"}`} 
+                            data-toggle="button" aria-pressed={this.state.usermode || "true"} 
+                            autoComplete="off"
+                            onClick={()=>this.set_usermode()}
+                        >
+                            <div className="handle" />
+                        </button>
+                    </div>
                     <img
                         src={this.state.userImg}
                         alt="test"
@@ -157,30 +168,6 @@ class Menu extends Component {
                             top: "1rem",
                         }}
                     ></img>
-                    <div>
-                        <div className="radio">
-                            <label>
-                                <input style={{
-                                    
-                                }} 
-                                type="radio" 
-                                value="option1" 
-                                
-                                checked={this.state.usermode} 
-                                onClick={()=>this.set_usermode()}
-                                />
-                                Student
-                            </label>
-                        </div>
-                        <div className="radio">
-                            <label>
-                                <input type="radio" value="option1" checked={!this.state.usermode}
-                                onClick={()=>this.set_usermode()}
-                                />
-                                Instructor
-                            </label>
-                        </div>
-                    </div>
                     <p
                         style={{
                             fontSize: "1.5rem",
