@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import {withRouter} from 'react-router'
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import MapView from "./components/MapView.js";
@@ -111,9 +111,12 @@ export default class App extends Component {
                             path="/modules/edit"
                             component={ManageModules}
                         />
-                        <Route exact path="/modules/student" component={ViewModules} />
-                        <Route exact path="/modules/instructor" component={ViewModules} />
-
+                        <Route exact path="/modules/student" component={withRouter(ViewModules)} />
+                        <Route exact path="/modules/instructor" component={withRouter(ViewModules)} />
+                        <Route exact path="/modules/student/view" component={withRouter(ViewModules)} />
+                        <Route exact path="/modules/instructor/view" component={withRouter(ViewModules)} />
+                        <Route exact path="/modules/student/search" component={withRouter(ViewModules)} />
+                        <Route exact path="/modules/instructor/search" component={withRouter(ViewModules)} /> 
                         <Route
                             exact
                             path="/module/:id/pins/edit"
