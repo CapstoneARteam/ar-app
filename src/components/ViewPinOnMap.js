@@ -295,7 +295,7 @@ class ViewPinOnMap extends Component {
     }
   }
   finish_modal() {
-    var FBtitle = "I have finished module " + this.state.stitch_res.title + " on ContextAR"
+    var FBtitle = "I have finished module -" + this.state.stitch_res.title + "- on ContextAR"
     return (
       <Modal
         show={this.state.finish_modal}
