@@ -295,7 +295,6 @@ class ViewPinOnMap extends Component {
     }
   }
   finish_modal() {
-    var FBtitle = "I have finished module -" + this.state.stitch_res.title + "- on ContextAR"
     return (
       <Modal
         show={this.state.finish_modal}
@@ -310,7 +309,7 @@ class ViewPinOnMap extends Component {
         <Modal.Body>
           You finished {this.state.stitch_res.title}
           <FacebookShareButton
-            quote={FBtitle}
+            quote={"title"}
             url={this.shareUrl}
           >
             <FacebookIcon />
@@ -387,7 +386,7 @@ class ViewPinOnMap extends Component {
                 
                  onError={(e)=>{
                   e.target.onerror = null;
-                  e.target.src=`${process.env.PUBLIC_URL}/babelcat.jpg`;}}
+                  e.target.src=`${process.env.PUBLIC_URL}/contextarlogo.jpg`;}}
                 ></img>
                 <Form style={{ paddingTop: "10px" }}>
                   {

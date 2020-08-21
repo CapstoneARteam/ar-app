@@ -158,7 +158,7 @@ export default class ViewModules extends Component {
                             src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + module.pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
                             onError={(e)=>{
                                 e.target.onerror = null;
-                                e.target.src=`${process.env.PUBLIC_URL}/babelcat.jpg`
+                                e.target.src=`${process.env.PUBLIC_URL}/contextarlogo.jpg`
                             }}
                         />
                         <Card.Title>{module.title}</Card.Title>
