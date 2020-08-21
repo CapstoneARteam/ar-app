@@ -301,6 +301,7 @@ class ViewPinOnMap extends Component {
   }
   finish_modal() {
     return (
+      
       <Modal
         show={this.state.finish_modal}
         onHide={() => this.toggle_modal()}

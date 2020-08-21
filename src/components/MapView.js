@@ -235,7 +235,7 @@ class MapView extends Component{
         .then(data => this.setState({currentLocation:data.records[0].fields.geopoint,userLocation:data.records[0].fields.geopoint}))
         .catch( (err) => {
           console.log(err)
-          alert("you have entered a nuclear code")
+          alert("You have entered a incorrect zip code, please try again.")
           }
             
          )

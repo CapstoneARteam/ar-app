@@ -87,7 +87,7 @@ export default class Module extends Component {
             }
             this.setState({module_info: module_info[0]}
             )
-          console.log(module_info)
+          console.log(this.props.match.params.id)
         }
         )
         .catch((err) => {this.setState({error: err})

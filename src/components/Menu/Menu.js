@@ -10,6 +10,7 @@ import styled from "styled-components";
 import { userMode, toggle_usermode } from "../mode";
 import './toggle.css';
  
+ 
 class Menu extends Component {
     constructor(props) {
         super(props);
@@ -143,8 +144,20 @@ class Menu extends Component {
                         <a href="#/">Home</a>
                     </li>
                     <li>
-                        <a href={`#/modules/${this.state.usermode ? "student": "instructor"}`}>View </a>
+                        <a style={{ paddingTop: "0rem"}} 
+                        
+                        href={`#/modules/${this.state.usermode ? "student": "instructor"}/search`} 
+                        
+                        
+                        >Search</a>
                     </li>
+                    
+                    <li>
+                        <a 
+
+                            href={`#/modules/${this.state.usermode ? "student": "instructor"}/view`}> View </a>
+                    </li>
+                    
                     <li 
                         style={{
                             display: "flex",
@@ -155,6 +168,7 @@ class Menu extends Component {
                     >
                         <a style={{ paddingTop: "0rem"}} href="#/modules/edit">Create</a>
                     </li>
+
                     <li>
                         <a
                             href="#/logout"

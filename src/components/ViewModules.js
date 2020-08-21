@@ -222,11 +222,25 @@ export default class ViewModules extends Component {
 
     render() {
         const url =this.props.location.pathname
+
+        console.log(this.props)
         var defaultTab= null
         var my_modules_tab=null
-        if(url=="/modules/student")
+
+        if(url == "/modules/student/view")
         {
             defaultTab="Shared Modules"
+        }
+        else if (url == "/modules/student/search"){
+            
+            defaultTab="Search"
+            console.log(defaultTab)
+        }
+        else if (url == "/modules/instructor/search"){
+            defaultTab="Search"
+            my_modules_tab= (<Tab eventKey="My Modules" title="My Modules">
+                                {this.add_module_cards(0)}
+                            </Tab>)
         }
         else
         {
@@ -281,7 +295,10 @@ export default class ViewModules extends Component {
                             justifyContent: "center",
                         }}
                     >
+
+
                         {my_modules_tab}
+
                         <Tab eventKey="Shared Modules" title="Shared with me">
                             <div>
                                 {this.add_module_cards(1)}
@@ -291,7 +308,7 @@ export default class ViewModules extends Component {
                             </div>
                         </Tab>
 
-                        <Tab eventKey="Go To" title="Search">
+                        <Tab eventKey="Search" title="Search">
                             <Form
                                 onSubmit={e => {
                                     e.preventDefault();
