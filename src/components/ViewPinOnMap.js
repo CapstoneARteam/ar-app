@@ -402,9 +402,10 @@ class ViewPinOnMap extends Component {
                   width: '100%'
                 }} src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + info._id.toString() + ".jpeg?versionid=latest&date=" + Date.now()}  
                 
-                 onError={(e)=>{
-                  e.target.onerror = null;
-                  e.target.src=`${process.env.PUBLIC_URL}/contextarlogo.jpg`;}}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `${process.env.PUBLIC_URL}/contextarlogo.jpg`
+                  }}
                 ></img>
                 <Form style={{ paddingTop: "10px" }}>
                   {
