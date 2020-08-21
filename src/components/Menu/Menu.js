@@ -211,10 +211,13 @@ const StyledMenu = styled.nav`
     @media (max-width: 150px) {
         width: 100%;
     }
+    li {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
     a {
         font-size: 1.5rem;
         text-transform: uppercase;
-        padding: 2rem 0;
         font-weight: Light;
         letter-spacing: 0.5rem;
         color: #FFFFF;
