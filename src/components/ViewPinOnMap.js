@@ -307,13 +307,20 @@ class ViewPinOnMap extends Component {
           <Modal.Title>Finish Module</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          You finished {this.state.stitch_res.title}
-          <FacebookShareButton
-            quote={"title"}
-            url={this.shareUrl}
-          >
-            <FacebookIcon />
-          </FacebookShareButton>
+          <p className="text-center">
+            You finished {this.state.stitch_res.title}
+          </p>
+          <div style={{
+            display: "flex",
+            justifyContent: "center"
+          }}>
+            <FacebookShareButton
+              quote={"title"}
+              url={this.shareUrl}
+            >
+              <FacebookIcon />
+            </FacebookShareButton>
+          </div>
           <Form style={{
             position: "relative",
             margin: "auto",
