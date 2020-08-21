@@ -129,7 +129,7 @@ class ViewPinOnMap extends Component {
     this.getUserPosition()
     this.drawpins()
 
-    //this.interval = setInterval(this.getUserPosition, 10000);
+    this.interval = setInterval(() => this.getUserPosition(), 10000);
    
 
   }
