@@ -8,7 +8,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowAltCircleRight, faArrowAltCircleLeft, faMapMarkerAlt, faStreetView } from '@fortawesome/free-solid-svg-icons'
 import { ButtonGroup, Button, Modal, Form } from 'react-bootstrap'
 import { userMode } from './mode'
-import { FacebookShareButton, FacebookIcon } from 'react-share'
+import { 
+  FacebookShareButton, FacebookIcon,
+  EmailIcon, EmailShareButton,
+  RedditShareButton, RedditIcon,
+  TwitterShareButton, TwitterIcon 
+} from 'react-share'
 
 
 
@@ -314,12 +319,18 @@ class ViewPinOnMap extends Component {
             display: "flex",
             justifyContent: "center"
           }}>
-            <FacebookShareButton
-              quote={"title"}
-              url={this.shareUrl}
-            >
+            <FacebookShareButton url={this.shareUrl}>
               <FacebookIcon />
             </FacebookShareButton>
+            <RedditShareButton url={this.shareUrl}>
+              <RedditIcon/>
+            </RedditShareButton>
+            <TwitterShareButton url={this.shareUrl}>
+              <TwitterIcon/>
+            </TwitterShareButton>
+            <EmailShareButton url={this.shareUrl}>
+              <EmailIcon />
+            </EmailShareButton>
           </div>
           <Form style={{
             position: "relative",
