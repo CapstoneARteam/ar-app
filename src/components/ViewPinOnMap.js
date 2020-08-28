@@ -300,6 +300,7 @@ class ViewPinOnMap extends Component {
     }
   }
   finish_modal() {
+    var finaltitle = "I have completed module " + this.state.stitch_res.title + " on ContextAR "
     return (
       
       <Modal
@@ -320,16 +321,24 @@ class ViewPinOnMap extends Component {
             display: "flex",
             justifyContent: "center"
           }}>
-            <FacebookShareButton url={this.shareUrl}>
+            <FacebookShareButton 
+            quote = {finaltitle}
+            url={this.shareUrl}>
               <FacebookIcon />
             </FacebookShareButton>
-            <RedditShareButton url={this.shareUrl}>
+            <RedditShareButton 
+            quote = {finaltitle}
+            url={this.shareUrl}>
               <RedditIcon/>
             </RedditShareButton>
-            <TwitterShareButton url={this.shareUrl}>
+            <TwitterShareButton 
+            quote = {finaltitle}
+            url={this.shareUrl}>
               <TwitterIcon/>
             </TwitterShareButton>
-            <EmailShareButton url={this.shareUrl}>
+            <EmailShareButton 
+            quote = {finaltitle}
+            url={this.shareUrl}>
               <EmailIcon />
             </EmailShareButton>
           </div>
@@ -340,9 +349,6 @@ class ViewPinOnMap extends Component {
           >
             <Form.Group>
               {/* <Button block onClick ={() => FacebookShareButton()}>Share</Button> */}
-            </Form.Group>
-            <Form.Group>
-              <Button block>Scan QR</Button>
             </Form.Group>
             <Form.Group>
               <Button block onClick={() => this.go_home()}>End Module</Button>
