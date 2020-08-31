@@ -10,6 +10,7 @@ export default class ViewModules extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            module_results: null,
             modules: [],
             my_modules: [],
             shared_modules: [],
@@ -22,7 +23,6 @@ export default class ViewModules extends Component {
             },
             accessed_modules: [],
         };
-        this.module_results = null;
         
         //refs
         this.goto_module_id = React.createRef();
@@ -197,8 +197,7 @@ export default class ViewModules extends Component {
                     .find({ title: { $regex: userQuery, $options: "i" } })
                     .asArray()
                     .then(docs => {
-                        this.module_results = docs.map(this.module_card, this);
-                        this.forceUpdate();
+                        this.setState({ module_results: docs.map(this.module_card, this) });
                     });
             }
         }
@@ -277,7 +276,7 @@ export default class ViewModules extends Component {
                                     </Button>
                                 </Form>
                                 <div className="row">
-                                    {this.module_results}
+                                    {this.state.module_results}
                                 </div>
                             </div>
                         </Tab>
