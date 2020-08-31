@@ -141,14 +141,12 @@ export default class ViewModules extends Component {
     module_card (module, idx) {
         const userid = this.state.user.user_id; 
         return (
-            <div className="col-md-6 col-lg-4 " key={idx}>
+            <div className="col-md-6 col-lg-4 " key={idx} style={{marginTop: "1rem"}}>
                 <Card
                     className="h-100"
                     style={{
-                        display: "fixed",
                         Width: "25rem",
                         margin: "0.25rem",
-                        justifyContent: "center",
                         textAlign: "center",
                     }}
                 >
@@ -200,55 +198,16 @@ export default class ViewModules extends Component {
         if (this.state.modules.length === 0) return;
         console.log(this.state.modules[type])
         const mds = this.state.modules[type].map(this.module_card, this);
-        return (
-            <div
-                style={{
-                    top: "50px",
-                    bottom: "0px",
-                    position: "relative",
-                }}
-                className="container"
-            >
-                <CardDeck
-                    style={{
-                        top: "50px",
-                    }}
-                >
-                    {mds}
-                </CardDeck>
-            </div>
-        );
+        return mds;
     }
 
     render() {
-        const url =this.props.location.pathname
-
-        console.log(this.props)
-        var defaultTab= null
-        var my_modules_tab=null
-
+        const url =this.props.location.pathname;
+        let defaultTab = "My Modules";
         if(url == "/modules/student/view")
-        {
-            defaultTab="Shared Modules"
-        }
-        else if (url == "/modules/student/search"){
-            
-            defaultTab="Search"
-            console.log(defaultTab)
-        }
-        else if (url == "/modules/instructor/search"){
-            defaultTab="Search"
-            my_modules_tab= (<Tab eventKey="My Modules" title="My Modules">
-                                {this.add_module_cards(0)}
-                            </Tab>)
-        }
-        else
-        {
-            defaultTab="My Modules"
-            my_modules_tab= (<Tab eventKey="My Modules" title="My Modules">
-                                {this.add_module_cards(0)}
-                            </Tab>)
-        }
+            defaultTab ="Shared Modules";
+        else if (url == "/modules/student/search" || url == "/modules/instructor/search")
+            defaultTab ="Search";
 
         const query_modules = () => {
             const userQuery = this.goto_module_id.current.value;
@@ -280,11 +239,9 @@ export default class ViewModules extends Component {
                 <div
                     style={{
                         top: "10px",
-                        bottom: '0px',
                         position: "relative",
-                        height: "100vh",
-                        marginLeft: "auto",
-                        marginRight: "auto",
+                        height: "max-content",
+                        margin: "auto"
                     }}
                 >
                     <Tabs
@@ -292,48 +249,60 @@ export default class ViewModules extends Component {
                         transition={false}
                         style={{
                             textAlign: "center",
+                            display: "flex",
                             justifyContent: "center",
                         }}
                     >
-
-
-                        {my_modules_tab}
-
+                        {
+                            url.includes("/modules/instructor/")
+                                ? (
+                                    <Tab eventKey="My Modules" title="My Modules">
+                                        <div className="container">
+                                            <div className="row">
+                                                {this.add_module_cards(0)}
+                                            </div>
+                                        </div>
+                                    </Tab>)
+                                : null
+                        }
                         <Tab eventKey="Shared Modules" title="Shared with me">
-                            <div>
-                                {this.add_module_cards(1)}
-                            </div>
-                            <div>
-                                {this.add_module_cards(2)}
+                            <div className="container">
+                                <div className="row">
+                                    {this.add_module_cards(1)}
+                                    {this.add_module_cards(2)}
+                                </div>
                             </div>
                         </Tab>
 
                         <Tab eventKey="Search" title="Search">
-                            <Form
-                                onSubmit={e => {
-                                    e.preventDefault();
-                                    query_modules();
-                                }}
-                            >
-                                <Form.Group controlId="formModuleId">
-                                    <Form.Label>Module</Form.Label>
-                                    <Form.Control
-                                        required
-                                        type="string"
-                                        placeholder="Enter module title or id"
-                                        ref={this.goto_module_id}
-                                    />
-                                </Form.Group>
-
-                                <Button
-                                    variant="primary"
-                                    style={{marginBottom: "10px"}}
-                                    onClick={query_modules}
+                            <div className="container">
+                                <Form
+                                    onSubmit={e => {
+                                        e.preventDefault();
+                                        query_modules();
+                                    }}
                                 >
-                                    Search
-                                </Button>
-                            </Form>
-                            {this.module_results}
+                                    <Form.Group controlId="formModuleId">
+                                        <Form.Label>Module</Form.Label>
+                                        <Form.Control
+                                            required
+                                            type="string"
+                                            placeholder="Enter module title or id"
+                                            ref={this.goto_module_id}
+                                        />
+                                    </Form.Group>
+                                    <Button
+                                        variant="primary"
+                                        style={{marginBottom: "10px"}}
+                                        onClick={query_modules}
+                                    >
+                                        Search
+                                    </Button>
+                                </Form>
+                                <div className="row">
+                                    {this.module_results}
+                                </div>
+                            </div>
                         </Tab>
                     </Tabs>
                 </div>
