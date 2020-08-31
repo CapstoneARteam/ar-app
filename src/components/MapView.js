@@ -69,7 +69,14 @@ const searchStyle = {
   zIndex: 1500,
 };
 
+/**
+ * Used to make the Map View
+ * @classdesc
+ */
 class MapView extends Component{
+  /**
+   * @param {Object} props 
+   */
   constructor(props){
     super(props)
 
@@ -101,7 +108,9 @@ class MapView extends Component{
   this.db = mongodb.db("APP"); 
   }
   
-
+  /**
+   * Gets user position and sets state
+   */
   getUserPosition(){
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({ userLocation : [position.coords.latitude, position.coords.longitude], userLocationFound:true, currentLocation : [position.coords.latitude, position.coords.longitude]})
@@ -112,13 +121,20 @@ class MapView extends Component{
   
   }
 
+  /**
+   * Initiate getuserposition and getpins
+   */
   componentDidMount(){
     this.getUserPosition()
     this.getpins()
 
   }
 
-  //find distance between two points in meters. Returns true for less than meters or false if not
+  /**
+   * find distance between two points in meters. Returns true for less than meters or false if not
+   * @param {Location} origin 
+   * @param {Location} destination 
+   */
   getDistance(origin, destination) {
     var lon1 = this.toRadian(origin[1]);
     var lat1 = this.toRadian(origin[0]);
@@ -140,10 +156,18 @@ class MapView extends Component{
       return false;
   }
 
+  /**
+   * Converts degree number to radian number
+   * @param {number} degree 
+   */
   toRadian(degree) {
     return degree*Math.PI/180;
   }
 
+  /**
+   * Queries db to get pins. 
+   * Only grab pins that are public, not owned by user, and not already shared to user
+   */
   async getpins() {
     if(!this.client.auth.isLoggedIn){
       return
@@ -196,6 +220,11 @@ class MapView extends Component{
     this.setState({ modules: modules});
   }
 
+  /**
+   * Center map view and zoom to user location, or zipcode location
+   * @param {Object} obj 
+   * @param {Location} coords 
+   */
   centerMap(obj,coords)
   {
 
@@ -208,6 +237,7 @@ class MapView extends Component{
          map.doubleClickZoom.enable();
       }, 1000);
       map.setView(coords, 13);
+      this.getpins();
       
      
     }
@@ -225,6 +255,10 @@ class MapView extends Component{
     }
 
   }
+
+  /**
+   * Set zipcode to user location 
+   */
   newZip()
   {
     //var zip_code = null;
@@ -247,6 +281,10 @@ class MapView extends Component{
       }
   }
 
+  /**
+   * Renders the map with pins and locations
+   * @return {JSX.Element}
+   */
   render(){
     const userLocation = this.state.userLocationFound ? (
       <Marker position={this.state.userLocation} icon= {myIcon} >
