@@ -158,7 +158,7 @@ export default class ViewModules extends Component {
                             <Card.Text>{module.description}</Card.Text>
                         </div>
                         <div style={{display: "flex", justifyContent: "center", flexWrap: "wrap"}}>
-                            <Link className="btn btn-primary mt-1" to={`#/module/${module._id}`}>
+                            <Link className="btn btn-primary mt-1" to={`/module/${module._id}`}>
                                 View Details
                             </Link>
                             <Link className="btn btn-primary ml-1 mt-1" to={`/module/${module._id}/pins/?user=${userid}`}>
@@ -171,12 +171,7 @@ export default class ViewModules extends Component {
         );
     }
 
-    add_module_cards(type) {
-        if (this.state.modules.length === 0) return;
-        console.log(this.state.modules[type])
-        const mds = this.state.modules[type].map(this.module_card, this);
-        return mds;
-    }
+    add_module_cards = type => this.state.modules[type]?.map(this.module_card, this);
 
     render() {
         const url =this.props.location.pathname;
@@ -267,13 +262,9 @@ export default class ViewModules extends Component {
                                             ref={this.goto_module_id}
                                         />
                                     </Form.Group>
-                                    <Button
-                                        variant="primary"
-                                        style={{marginBottom: "10px"}}
-                                        onClick={query_modules}
-                                    >
+                                    <button className="btn btn-primary mb-1">
                                         Search
-                                    </Button>
+                                    </button>
                                 </Form>
                                 <div className="row">
                                     {this.state.module_results}
