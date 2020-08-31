@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Card, Tab, Tabs, CardDeck, Form, Button } from "react-bootstrap";
+import { Card, Tab, Tabs, Form, Button } from "react-bootstrap";
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-browser-sdk";
 import { ObjectId } from "mongodb";
+import { Link } from 'react-router-dom';
 import { waitForElementToBeRemoved } from "@testing-library/react";
 //import {AwsServiceClient, AwsRequest} from 'mongodb-stitch-browser-services-aws'
 
@@ -29,7 +30,6 @@ export default class ViewModules extends Component {
 
         this.add_module_cards = this.add_module_cards.bind(this);
         this.fetch_modules = this.fetch_modules.bind(this);
-        this.goto_module = this.goto_module.bind(this);
 
         const appId = "capstonear_app-xkqng";
         if (Stitch.hasAppClient(appId)) {
@@ -134,59 +134,40 @@ export default class ViewModules extends Component {
         console.log(this.state.accessed_modules);
     }
 
-    goto_module(id) {
-        window.location.assign("#/module/" + id);
-    }
-
     module_card (module, idx) {
         const userid = this.state.user.user_id; 
         return (
             <div className="col-md-6 col-lg-4 " key={idx} style={{marginTop: "1rem"}}>
-                <Card
-                    className="h-100"
-                    style={{
-                        Width: "25rem",
-                        margin: "0.25rem",
-                        textAlign: "center",
-                    }}
-                >
-                    <Card.Body>
-                        <Card.Img
-                            variant="top"
-                            src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + module.pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
-                            onError={(e)=>{
-                                e.target.onerror = null;
-                                e.target.src=`${process.env.PUBLIC_URL}/contextarlogo.jpg`
-                            }}
-                        />
-                        <Card.Title>{module.title}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">
-                            by {module.owner_name} ({module.owner_email})
-                        </Card.Subtitle>
-                        <Card.Text>{module.description}</Card.Text>
-                        <div
-                            className="btn-toolbar"
-                            style={{
-                                justifyContent: "center",
-                            }}
-                        >
-                            <div className="btn-group mr-1" style={{paddingTop: "10px"}}>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => window.location.assign(`#/module/${module._id}`)}
-                                >
-                                    View Details
-                                </button>
-                            </div>
-                            <div className="btn-group mr-1" style={{paddingTop: "10px"}}>
-                                <button className="btn btn-primary"
-                                    onClick={() =>{
-                                        window.location.assign(`#/module/${module._id}/pins/?user=${userid}`)
-                                    }
-                                }>
-                                    Start Module
-                                </button>
-                            </div>
+                <Card style={{height: "100%"}}>
+                    <Card.Body
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between"
+                        }}
+                    >
+                        <div style={{textAlign: "center"}}>
+                            <Card.Img
+                                variant="top"
+                                src={"https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + module.pins[0] + ".jpeg?versionid=latest&date=" + Date.now()}
+                                onError={(e)=>{
+                                    e.target.onerror = null;
+                                    e.target.src=`${process.env.PUBLIC_URL}/contextarlogo.jpg`
+                                }}
+                            />
+                            <Card.Title>{module.title}</Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted">
+                                by {module.owner_name} ({module.owner_email})
+                            </Card.Subtitle>
+                            <Card.Text>{module.description}</Card.Text>
+                        </div>
+                        <div style={{display: "flex", justifyContent: "center", flexWrap: "wrap"}}>
+                            <Link className="btn btn-primary mt-1" to={`#/module/${module._id}`}>
+                                View Details
+                            </Link>
+                            <Link className="btn btn-primary ml-1 mt-1" to={`/module/${module._id}/pins/?user=${userid}`}>
+                                Start Module
+                            </Link>
                         </div>
                     </Card.Body>
                 </Card>
