@@ -24,7 +24,6 @@ export default class ViewModules extends Component {
         };
         this.module_results = null;
         
-
         //refs
         this.goto_module_id = React.createRef();
 
@@ -42,17 +41,16 @@ export default class ViewModules extends Component {
             this.db = mongodb.db("APP");
         } else {
             this.client = Stitch.initializeAppClient(appId);
-            //console.log("client init")
         }
     }
 
     componentDidMount() {
         this.fetch_modules();
-
     }
 
-    async fetch_modules() {
-        await this.db
+    fetch_modules() {
+        // fetch user's modules
+        this.db
             .collection("MODULES")
             .find({
                 owner_id: this.client.auth.authInfo.userId,
@@ -61,18 +59,17 @@ export default class ViewModules extends Component {
             .then((my_modules) => {
                 this.setState({
                     my_modules: my_modules,
-                    modules: {
-                        0: my_modules,
-                        1: this.state.shared_modules,
-                        2: this.state.accessed_modules,
-                    },
+                    modules: [
+                        my_modules,
+                        this.state.shared_modules,
+                        this.state.accessed_modules
+                    ],
                 });
-
-                console.log(this.state.my_modules);
+                console.log("My Modules: ", this.state.my_modules);
             });
 
         //fetch shared modules
-        await this.db
+        this.db
             .collection("MODULES")
             .find({
                 shared_with: this.client.auth.authInfo.userProfile.data.email,
@@ -81,15 +78,14 @@ export default class ViewModules extends Component {
             .then((shared_modules) => {
                 this.setState({
                     shared_modules: shared_modules,
-                    modules: {
-                        0: this.state.my_modules,
-                        1: shared_modules,
-                        2: this.state.accessed_modules,
-                    },
+                    modules: [
+                        this.state.my_modules,
+                        shared_modules,
+                        this.state.accessed_modules,
+                    ],
                 });
-                console.log(shared_modules);
+                console.log("Shared Modules: ", shared_modules);
             });
-        console.log(this.state.modules);
 
         // fetch user collection, create new if not found
         const query = {
@@ -102,36 +98,36 @@ export default class ViewModules extends Component {
             returnNewDocument: true,
             upsert: true,
         };
-        await this.db
+        this.db
             .collection("USERS")
             .findOneAndUpdate(query, update, options)
             .then((res) => {
-                console.log("User: ", res);
-                this.setState({ user: res });
+                const user = res;
+                console.log("User: ", user);
+                this.setState({ user });
+
+                // fetch accessed links and set accessed modules
+                this.db
+                    .collection("MODULES")
+                    .find({
+                        shared_with: { $ne: this.client.auth.authInfo.userProfile.data.email },
+                        _id: { $in: user.accessed_links },
+                        public: true,
+                    })
+                    .asArray()
+                    .then((accessed_modules) => {
+                        this.setState({
+                            accessed_modules: accessed_modules,
+                            modules: [
+                                this.state.my_modules,
+                                this.state.shared_modules,
+                                accessed_modules
+                            ],
+                        });
+                        console.log("Accessed: ", accessed_modules);
+                    });
             })
             .catch(console.error);
-
-        // fetch accessed links and set accessed modules
-        await this.db
-            .collection("MODULES")
-            .find({
-                shared_with: { $ne: this.client.auth.authInfo.userProfile.data.email},
-                _id: { $in: [...this.state.user.accessed_links]},
-                public: true,
-            })
-            .asArray()
-            .then((accessed_modules) => {
-                this.setState({
-                    accessed_modules: accessed_modules,
-                    modules: {
-                        0: this.state.my_modules,
-                        1: this.state.shared_modules,
-                        2: accessed_modules,
-                    },
-                });
-                console.log("Accessed: ",accessed_modules);
-            });
-        console.log(this.state.accessed_modules);
     }
 
     module_card (module, idx) {
