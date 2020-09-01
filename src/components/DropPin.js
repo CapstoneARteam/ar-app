@@ -78,14 +78,18 @@ const OpenFile = (props) => {
             <input type="file" multiple="single" onChange={(e) => {
                 HandleFileChange(props, e)
             }}></input>
-            <img style={{
-                height: '200px',
-                width : '300px'
-                    }} 
-                alt="upload"
-                src={srcurl}
-                onError={(e)=>{e.target.onerror = null; e.target.src='https://capstoneusercontent.s3-us-west-2.amazonaws.com/default.png'}}></img>
-              
+            {srcurl ?
+                <img
+                    style={{
+                        height: '200px',
+                        width: '300px'
+                    }}
+                    alt="upload"
+                    src={srcurl}
+                    onError={(e) => { e.target.onerror = null; e.target.src = `${process.env.PUBLIC_URL}/contextarlogo.jpg` }}
+                />
+                :null
+            }
         </div>
     )
 }
@@ -97,9 +101,13 @@ export const EditForm = (props) => {
     };
     const [imgurl, setimgurl] = useState("https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + props.id + ".jpeg?versionid=latest&date=" + Date.now());
 
-
     return (
-        <Modal {...props} centered show={props.show} style={{ zIndex: "1600" }}>
+        <Modal
+            show={props.show}
+            onHide={props.onHide}
+            centered show={props.show} 
+            style={{ zIndex: "1600" }}
+        >
             <Modal.Header>
                 <Modal.Title>Edit a Pin</Modal.Title>
             </Modal.Header>
@@ -148,14 +156,6 @@ export const EditForm = (props) => {
                     </Form.Group>
                     <Form.Group>
                         <OpenFile base64data={props.base64data} setbase64data={props.setbase64data} imgurl={imgurl} setimgurl={setimgurl}></OpenFile>
-                        <img 
-                            alt="pin/locaiton related"
-                            style={{
-                                height: '200px',
-                                width: '300px'
-                            }} 
-                            src={imgurl}
-                        />
                     </Form.Group>
                 </Form>
             </Modal.Body>
@@ -291,10 +291,11 @@ const AddpinForm = (props) => {
                 <OpenFile base64data={props.base64data} setbase64data={props.setbase64data}> </OpenFile>
             </Modal.Body>
             <Modal.Footer>
-            <button className="btn btn-secondary" onClick={ ()=> {
-                    props.onHide() 
-                    props.setbase64data("default")
-                }}>
+                <button className="btn btn-secondary" onClick={ ()=> {
+                        props.onHide() 
+                        props.setbase64data("default")
+                    }}
+                >
                     Cancel
                 </button>
                 <button
