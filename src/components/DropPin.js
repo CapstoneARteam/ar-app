@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { BSON } from "mongodb-stitch-browser-sdk"
@@ -6,7 +6,6 @@ import { AwsServiceClient, AwsRequest } from 'mongodb-stitch-browser-services-aw
 import { Button, Form, Modal, Dropdown } from "react-bootstrap";
 import { ObjectId } from "mongodb";
 import { client, db } from "./clientdb"
-var base64data = 'default'
 
 
 var globalPosition = {};
@@ -66,9 +65,6 @@ const HandleUpload = (base64data, id) => {
 }
 
 const OpenFile = (props) => {
-    console.log("open file")
-
-    console.log(props.base64data)
     var srcurl = ''
     if(props.base64data === 'default'){
         srcurl = props.imgurl
@@ -86,6 +82,7 @@ const OpenFile = (props) => {
                 height: '200px',
                 width : '300px'
                     }} 
+                alt="upload"
                 src={srcurl}
                 onError={(e)=>{e.target.onerror = null; e.target.src='https://capstoneusercontent.s3-us-west-2.amazonaws.com/default.png'}}></img>
               
@@ -107,7 +104,6 @@ export const EditForm = (props) => {
                 <Modal.Title>Edit a Pin</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-
                 <Form>
                     <Form.Group>
                         <Form.Label>Title</Form.Label>
@@ -152,72 +148,27 @@ export const EditForm = (props) => {
                     </Form.Group>
                     <Form.Group>
                         <OpenFile base64data={props.base64data} setbase64data={props.setbase64data} imgurl={imgurl} setimgurl={setimgurl}></OpenFile>
-                        <img style={{
-                            height: '200px',
-                            width: '300px'
-                        }} src={imgurl}></img>
+                        <img 
+                            alt="pin/locaiton related"
+                            style={{
+                                height: '200px',
+                                width: '300px'
+                            }} 
+                            src={imgurl}
+                        />
                     </Form.Group>
                 </Form>
-
             </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={
-                    () =>{
+                <Button variant="secondary"
+                    onClick={() => {
                         props.cancel()
                         props.setbase64data('default')
-                    }
-                    }>
-                    Cancel
-                </Button>
-                <Button
-                    variant="primary"
-                    onClick={() => {
-                        /*
-                  
-                                          const title =
-                                              document.getElementById("title").value || "";
-                                          const hint =
-                                              document.getElementById("hint").value || "";
-                                          const description =
-                                              document.getElementById("description").value || "";
-                                          const destination =
-                                              document.getElementById("destination").value || "";
-                                          const query = { _id: props.objectID };
-                                          const update = {
-                                              $set: {
-                                                  title: title,
-                                                  description: description,
-                                                  hint: hint,
-                                                  destination: destination,
-                                              },
-                                          };
-                                          // update a pin on the database
-                                          db.collection("PINS")
-                                              .findOneAndUpdate(query, update)
-                                              .then((objectID) => {
-                                                  console.log(objectID._id.toString())
-                                                  console.log(base64data)
-                                                  if(base64data === "default")
-                                                  {}
-                                                  else{
-                                                      //upload image
-                                                      HandleUpload(base64data, objectID._id.toString())
-                  
-                                                  }
-                                                  
-                                                  setDefaultValues({
-                                                      title: title,
-                                                      description: description,
-                                                      hint: hint,
-                                                      destination: destination
-                                                  });
-                                                  setimgurl("https://capstoneusercontent.s3-us-west-2.amazonaws.com/" + props.id + ".jpeg?versionid=latest&date=" + Date.now())
-                                                  props.cancel();
-                                              });
-                  */
-                        props.save(pin);
                     }}
                 >
+                    Cancel
+                </Button>
+                <Button onClick={() => props.save(pin)}>
                     Submit
                 </Button>
             </Modal.Footer>
@@ -283,7 +234,12 @@ const AddpinForm = (props) => {
     }, []);
 
     return (
-        <Modal {...props} centered style={{ zIndex: "1600" }}>
+        <Modal 
+            centered 
+            style={{ zIndex: "1600" }}
+            show={props.show}
+            onHide={props.onHide}
+        >
             <Modal.Header>
                 <Modal.Title>Add a Pin</Modal.Title>
             </Modal.Header>
@@ -299,9 +255,11 @@ const AddpinForm = (props) => {
                             Dropdown Button
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {categories.map(curr => {
+                            {categories.map((curr, idx) => {
                                 const placeholders = { description: curr.description, hint: curr.hint };
-                                return (<Dropdown.Item
+                                return (
+                                <Dropdown.Item
+                                    key={idx}
                                     eventKey={JSON.stringify(placeholders)}
                                 >
                                     {curr.title}
@@ -318,11 +276,11 @@ const AddpinForm = (props) => {
                 <label className="d-block" htmlFor="description">
                     Description
                 </label>
-                <textarea className="w-100" id="description" placeHolder={placeholder.description} required />
+                <textarea className="w-100" id="description" placeholder={placeholder.description} required />
                 <label className="d-block" htmlFor="hint">
                     Hint
                 </label>
-                <textarea className="w-100" id="hint" placeHolder={placeholder.hint} required />
+                <textarea className="w-100" id="hint" placeholder={placeholder.hint} required />
                 <label className="d-block" htmlFor="destination">
                     Student Feedback
                 </label>
@@ -480,7 +438,7 @@ const DropPin = (props) => {
                     });
             })
             .catch(console.error);
-    }, [props.match.params.id]);
+    }, [props.match.params.id, base64data]);
 
     return (
         <Map
